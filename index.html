@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GrayBit-7 Viewer</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="toolbar">
+      <div class="toolbar__group">
+        <label class="button button--primary">
+          <input id="fileInput" type="file" accept=".png,.jpg,.jpeg,.gb7,image/png,image/jpeg" hidden />
+          Открыть
+        </label>
+
+        <button id="downloadPngBtn" class="button">Скачать PNG</button>
+        <button id="downloadJpgBtn" class="button">Скачать JPG</button>
+        <button id="downloadGb7Btn" class="button">Скачать GB7</button>
+      </div>
+
+      <div class="toolbar__group">
+        <label class="checkbox">
+          <input id="maskCheckbox" type="checkbox" />
+          Экспортировать GB7 с маской
+        </label>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="sidebar">
+        <h2>Информация</h2>
+        <div class="info-list">
+          <div><span>Имя файла:</span> <strong id="fileName">—</strong></div>
+          <div><span>Формат:</span> <strong id="fileFormat">—</strong></div>
+          <div><span>Размер:</span> <strong id="imageSize">—</strong></div>
+          <div><span>Глубина цвета:</span> <strong id="colorDepth">—</strong></div>
+          <div><span>Маска:</span> <strong id="maskInfo">—</strong></div>
+        </div>
+
+        <hr />
+
+        <p class="hint">
+          Поддерживаются PNG, JPG и GB7.  
+          Для GB7 изображение хранится в оттенках серого, 7 бит яркости + 1 бит маски.
+        </p>
+      </aside>
+
+      <section class="canvas-panel">
+        <div class="canvas-wrapper" id="canvasWrapper">
+          <canvas id="canvas"></canvas>
+        </div>
+      </section>
+    </main>
+
+    <footer class="status-bar">
+      <span id="statusText">Нет загруженного изображения</span>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
