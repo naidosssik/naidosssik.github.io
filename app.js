@@ -124,7 +124,7 @@ async function loadStandardImage(file) {
 
   state.fileName = file.name;
   state.format = file.type.includes("png") ? "PNG" : "JPG";
-  state.colorDepth = "24 бит / 32 бит RGBA";
+  state.colorDepth = "32 бит (RGBA)";
   state.hasMask = hasAnyTransparency(imageData);
 
   renderImageData(imageData);
@@ -286,7 +286,7 @@ async function loadGB7(file) {
 
   state.fileName = file.name;
   state.format = "GB7";
-  state.colorDepth = result.hasMask ? "7 бит Gray + 1 бит mask" : "7 бит Gray";
+  state.colorDepth = result.hasMask ? "8 бит (7 Gray + 1 mask)" : "7 бит (Gray)";
   state.hasMask = result.hasMask;
 
   renderImageData(result.imageData);
