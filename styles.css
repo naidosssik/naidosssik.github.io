@@ -179,3 +179,7 @@ hr {
   align-items: center;
   gap: 4px;
 }
+
+#fileName {
+  overflow-wrap: anywhere;
+}
