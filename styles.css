@@ -120,14 +120,9 @@ body {
 .canvas-panel {
   min-width: 0;
   min-height: 0;
-  background:
-    linear-gradient(45deg, #2a2a2a 25%, transparent 25%),
-    linear-gradient(-45deg, #2a2a2a 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, #2a2a2a 75%),
-    linear-gradient(-45deg, transparent 75%, #2a2a2a 75%);
-  background-size: 24px 24px;
-  background-position: 0 0, 0 12px, 12px -12px, -12px 0px;
+  background: var(--panel-2);
   overflow: auto;
+  transition: background 0.3s ease;
 }
 
 .canvas-wrapper {
@@ -136,6 +131,16 @@ body {
   display: flex;
   align-items: flex-start;
   justify-content: center;
+}
+
+.canvas-panel--checkerboard {
+  background:
+    linear-gradient(45deg, #2a2a2a 25%, transparent 25%),
+    linear-gradient(-45deg, #2a2a2a 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #2a2a2a 75%),
+    linear-gradient(-45deg, transparent 75%, #2a2a2a 75%);
+  background-size: 24px 24px;
+  background-position: 0 0, 0 12px, 12px -12px, -12px 0px;
 }
 
 canvas {
