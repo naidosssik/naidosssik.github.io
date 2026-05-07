@@ -17,6 +17,8 @@ const colorDepthEl = document.getElementById("colorDepth");
 const maskInfoEl = document.getElementById("maskInfo");
 const statusTextEl = document.getElementById("statusText");
 
+const canvasPanel = document.querySelector(".canvas-panel"); 
+
 const state = {
   fileName: "",
   format: "",
@@ -113,6 +115,13 @@ async function loadStandardImage(file) {
 
   state.fileName = file.name;
   state.format = file.type.includes("png") ? "PNG" : "JPG";
+
+  if (isPng) {
+    canvasPanel.classList.add("canvas-panel--checkerboard");
+  } else {
+    canvasPanel.classList.remove("canvas-panel--checkerboard");
+  }
+  
   state.colorDepth = "32 бит (RGBA)";
   state.hasMask = hasAnyTransparency(imageData);
 
@@ -155,6 +164,7 @@ async function loadGB7(file) {
   ? "8 бит (7 Gray + 1 mask)"
   : "7 бит (Gray)";
   state.hasMask = result.hasMask;
+  canvasPanel.classList.remove("canvas-panel--checkerboard");
 
   renderImageData(result.imageData);
 }
