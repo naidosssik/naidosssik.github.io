@@ -172,3 +172,10 @@ hr {
     border-bottom: 1px solid var(--border);
   }
 }
+
+.mask-option {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
