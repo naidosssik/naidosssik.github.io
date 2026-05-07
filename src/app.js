@@ -27,16 +27,6 @@ const state = {
   imageData: null,
 };
 
-function replaceExtension(fileName, newExt) {
-  const dotIndex = fileName.lastIndexOf(".");
-
-  if (dotIndex === -1) {
-    return `${fileName}.${newExt}`;
-  }
-
-  return `${fileName.slice(0, dotIndex)}.${newExt}`;
-}
-
 function downloadBlob(blob, fileName) {
   const url = URL.createObjectURL(blob);
 
@@ -49,10 +39,6 @@ function downloadBlob(blob, fileName) {
   link.remove();
 
   URL.revokeObjectURL(url);
-}
-
-function clamp(value, min, max) {
-  return Math.max(min, Math.min(max, value));
 }
 
 function exportCanvasImage(type, quality = 0.92) {
