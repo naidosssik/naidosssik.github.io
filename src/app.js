@@ -114,7 +114,8 @@ async function loadStandardImage(file) {
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
   state.fileName = file.name;
-  state.format = file.type.includes("png") ? "PNG" : "JPG";
+  const isPng = file.type.includes("png");
+  state.format = isPng ? "PNG" : "JPG";
 
   if (isPng) {
     canvasPanel.classList.add("canvas-panel--checkerboard");
