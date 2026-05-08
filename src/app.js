@@ -9,6 +9,8 @@ const downloadPngBtn = document.getElementById("downloadPngBtn");
 const downloadJpgBtn = document.getElementById("downloadJpgBtn");
 const downloadGb7Btn = document.getElementById("downloadGb7Btn");
 const maskCheckbox = document.getElementById("maskCheckbox");
+const emptyState = document.getElementById("emptyState");
+const toolButtons = document.querySelectorAll(".tool-button");
 
 const fileNameEl = document.getElementById("fileName");
 const fileFormatEl = document.getElementById("fileFormat");
@@ -16,6 +18,10 @@ const imageSizeEl = document.getElementById("imageSize");
 const colorDepthEl = document.getElementById("colorDepth");
 const maskInfoEl = document.getElementById("maskInfo");
 const statusTextEl = document.getElementById("statusText");
+const pixelPositionEl = document.getElementById("pixelPosition");
+const pixelRgbaEl = document.getElementById("pixelRgba");
+const pixelHexEl = document.getElementById("pixelHex");
+const colorPreviewEl = document.getElementById("colorPreview");
 
 const state = {
   fileName: "",
@@ -25,6 +31,7 @@ const state = {
   colorDepth: "",
   hasMask: false,
   imageData: null,
+  activeTool: "cursor",
 };
 
 function downloadBlob(blob, fileName) {
@@ -59,10 +66,34 @@ function exportCanvasImage(type, quality = 0.92) {
   }, type, quality);
 }
 
+function setActiveTool(tool) {
+  state.activeTool = tool;
+
+  toolButtons.forEach((button) => {
+    button.classList.toggle("tool-button--active", button.dataset.tool === tool);
+  });
+
+  canvas.classList.toggle("tool-eyedropper", tool === "eyedropper");
+  canvas.classList.toggle("tool-cursor", tool === "cursor");
+
+  statusTextEl.textContent = tool === "eyedropper"
+    ? "Инструмент: пипетка. Кликните по изображению, чтобы выбрать цвет."
+    : getImageStatusText();
+}
+
+function getImageStatusText() {
+  if (!state.width || !state.height) {
+    return "Нет загруженного изображения";
+  }
+
+  return `Ширина: ${state.width}px | Высота: ${state.height}px | Глубина цвета: ${state.colorDepth}`;
+}
+
 function renderImageData(imageData) {
   canvas.width = imageData.width;
   canvas.height = imageData.height;
   canvas.style.display = "block";
+  emptyState.style.display = "none";
 
   ctx.putImageData(imageData, 0, 0);
 
@@ -71,6 +102,7 @@ function renderImageData(imageData) {
   state.imageData = imageData;
 
   updateInfoPanel();
+  resetPixelInfo();
 }
 
 function updateInfoPanel() {
@@ -79,13 +111,7 @@ function updateInfoPanel() {
   imageSizeEl.textContent = state.width && state.height ? `${state.width} × ${state.height}` : "—";
   colorDepthEl.textContent = state.colorDepth || "—";
   maskInfoEl.textContent = state.hasMask ? "есть" : "нет";
-
-  if (state.width && state.height) {
-    statusTextEl.textContent =
-      `Ширина: ${state.width}px | Высота: ${state.height}px | Глубина цвета: ${state.colorDepth}`;
-  } else {
-    statusTextEl.textContent = "Нет загруженного изображения";
-  }
+  statusTextEl.textContent = getImageStatusText();
 }
 
 async function loadStandardImage(file) {
@@ -131,6 +157,47 @@ async function loadGB7(file) {
   renderImageData(result.imageData);
 }
 
+function componentToHex(value) {
+  return value.toString(16).padStart(2, "0").toUpperCase();
+}
+
+function rgbaToHex(r, g, b) {
+  return `#${componentToHex(r)}${componentToHex(g)}${componentToHex(b)}`;
+}
+
+function resetPixelInfo() {
+  pixelPositionEl.textContent = "—";
+  pixelRgbaEl.textContent = "—";
+  pixelHexEl.textContent = "—";
+  colorPreviewEl.style.background = "";
+}
+
+function pickPixel(event) {
+  if (state.activeTool !== "eyedropper" || !state.imageData) {
+    return;
+  }
+
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const x = Math.floor((event.clientX - rect.left) * scaleX);
+  const y = Math.floor((event.clientY - rect.top) * scaleY);
+
+  if (x < 0 || y < 0 || x >= canvas.width || y >= canvas.height) {
+    return;
+  }
+
+  const pixel = ctx.getImageData(x, y, 1, 1).data;
+  const [r, g, b, a] = pixel;
+  const hex = rgbaToHex(r, g, b);
+
+  pixelPositionEl.textContent = `${x}, ${y}`;
+  pixelRgbaEl.textContent = `${r}, ${g}, ${b}, ${a}`;
+  pixelHexEl.textContent = hex;
+  colorPreviewEl.style.background = `rgba(${r}, ${g}, ${b}, ${a / 255})`;
+  statusTextEl.textContent = `Пипетка: x=${x}, y=${y}, RGBA(${r}, ${g}, ${b}, ${a})`;
+}
+
 downloadPngBtn.addEventListener("click", () => exportCanvasImage("image/png"));
 downloadJpgBtn.addEventListener("click", () => exportCanvasImage("image/jpeg", 0.92));
 
@@ -146,6 +213,12 @@ downloadGb7Btn.addEventListener("click", () => {
 
   downloadBlob(blob, fileName);
 });
+
+toolButtons.forEach((button) => {
+  button.addEventListener("click", () => setActiveTool(button.dataset.tool));
+});
+
+canvas.addEventListener("click", pickPixel);
 
 fileInput.addEventListener("change", async (event) => {
   const file = event.target.files?.[0];
@@ -177,3 +250,4 @@ fileInput.addEventListener("change", async (event) => {
 });
 
 updateInfoPanel();
+setActiveTool("cursor");

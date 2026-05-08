@@ -10,37 +10,55 @@
   <div class="app">
     <header class="toolbar">
       <div class="toolbar__brand">GrayBit-7 Viewer</div>
-
-      <div class="toolbar__group">
-        <label class="button button--primary">
-          <input id="fileInput" type="file" accept=".png,.jpg,.jpeg,.gb7,image/png,image/jpeg" hidden />
-          Открыть
-        </label>
-
-        <div class="save-menu">
-          <button id="saveMenuBtn" class="button" type="button">Сохранить ▾</button>
-          <div class="save-menu__dropdown" aria-label="Меню сохранения">
-            <button id="downloadPngBtn" type="button">Скачать PNG</button>
-            <button id="downloadJpgBtn" type="button">Скачать JPG</button>
-            <button id="downloadGb7Btn" type="button">Скачать GB7</button>
-            <label class="mask-option">
-              <input type="checkbox" id="maskCheckbox" />
-              GB7 с маской
-            </label>
-          </div>
-        </div>
-      </div>
     </header>
 
     <main class="workspace">
+      <aside class="tools-panel" aria-label="Инструменты">
+        <div class="file-actions">
+          <label class="button button--primary file-actions__button">
+            <input id="fileInput" type="file" accept=".png,.jpg,.jpeg,.gb7,image/png,image/jpeg" hidden />
+            Открыть
+          </label>
+
+          <div class="save-menu">
+            <button id="saveMenuBtn" class="button file-actions__button" type="button">Скачать ▾</button>
+            <div class="save-menu__dropdown" aria-label="Меню сохранения">
+              <button id="downloadPngBtn" type="button">PNG</button>
+              <button id="downloadJpgBtn" type="button">JPG</button>
+              <button id="downloadGb7Btn" type="button">GB7</button>
+              <label class="mask-option">
+                <input type="checkbox" id="maskCheckbox" />
+                GB7 с маской
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="tools-list">
+          <button class="tool-button tool-button--active" data-tool="cursor" type="button" title="Выделение / курсор">
+            <span class="tool-button__icon">↖</span>
+            <span class="tool-button__label">Курсор</span>
+          </button>
+
+          <button class="tool-button" data-tool="eyedropper" type="button" title="Пипетка">
+            <span class="tool-button__icon">⌕</span>
+            <span class="tool-button__label">Пипетка</span>
+          </button>
+        </div>
+      </aside>
+
       <section class="canvas-panel">
         <div class="canvas-wrapper" id="canvasWrapper">
+          <div class="empty-state" id="emptyState">
+            <strong>Загрузите изображение</strong>
+            <span>PNG, JPG, JPEG или GB7</span>
+          </div>
           <canvas id="canvas"></canvas>
         </div>
       </section>
 
       <aside class="info-panel">
-        <h2>Информация</h2>
+        <h2>Информация об изображении</h2>
         <div class="info-list">
           <div><span>Имя файла:</span> <strong id="fileName">—</strong></div>
           <div><span>Формат:</span> <strong id="fileFormat">—</strong></div>
@@ -51,9 +69,21 @@
 
         <hr />
 
+        <h3>Пипетка</h3>
+        <div class="color-card">
+          <div class="color-preview" id="colorPreview"></div>
+          <div class="color-values">
+            <div><span>Позиция:</span> <strong id="pixelPosition">—</strong></div>
+            <div><span>RGBA:</span> <strong id="pixelRgba">—</strong></div>
+            <div><span>HEX:</span> <strong id="pixelHex">—</strong></div>
+          </div>
+        </div>
+
+        <hr />
+
         <p class="hint">
-          Поддерживаются PNG, JPG и GB7.
-          Для GB7 изображение хранится в оттенках серого, 7 бит яркости + 1 бит маски.
+          Выберите пипетку слева и кликните по изображению, чтобы получить цвет пикселя.
+          Формат GB7 хранит 7 бит яркости и дополнительный бит маски.
         </p>
       </aside>
     </main>
