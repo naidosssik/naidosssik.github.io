@@ -3,7 +3,16 @@ import { replaceExtension } from "./utils.js";
 
 const fileInput = document.getElementById("fileInput");
 const canvas = document.getElementById("canvas");
+const channelsList = document.getElementById("channelsList");
 const ctx = canvas.getContext("2d", { willReadFrequently: true });
+const channelState = {
+  r: true,
+  g: true,
+  b: true,
+  a: true,
+};
+
+let originalImageData = null;
 
 const downloadPngBtn = document.getElementById("downloadPngBtn");
 const downloadJpgBtn = document.getElementById("downloadJpgBtn");
@@ -122,6 +131,10 @@ async function loadStandardImage(file) {
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(bitmap, 0, 0);
+  originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+  updateChannelPreviews();
+  applyChannels();
 
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
@@ -249,5 +262,78 @@ fileInput.addEventListener("change", async (event) => {
   }
 });
 
+
+
 updateInfoPanel();
 setActiveTool("cursor");
+
+
+channelsList?.addEventListener("click", (event) => {
+    originalImageData.width,
+    originalImageData.height
+
+  const data = imageData.data;
+
+  for (let i = 0; i < data.length; i += 4) {
+    if (!channelState.r) data[i] = 0;
+    if (!channelState.g) data[i + 1] = 0;
+    if (!channelState.b) data[i + 2] = 0;
+
+    if (!channelState.a) {
+      data[i + 3] = 255;
+    }
+  }
+
+  ctx.putImageData(imageData, 0, 0);
+});
+
+function updateChannelPreviews() {
+  if (!originalImageData) return;
+
+  createChannelPreview("r", 0);
+  createChannelPreview("g", 1);
+  createChannelPreview("b", 2);
+  createChannelPreview("a", 3, true);
+}
+
+function createChannelPreview(channel, offset, grayscale = false) {
+  const previewCanvas = document.getElementById(`preview-${channel}`);
+
+  if (!previewCanvas) return;
+
+  const previewCtx = previewCanvas.getContext("2d");
+
+  const preview = new ImageData(
+    new Uint8ClampedArray(originalImageData.data),
+    originalImageData.width,
+    originalImageData.height
+  );
+
+  const data = preview.data;
+
+  for (let i = 0; i < data.length; i += 4) {
+    const value = data[i + offset];
+
+    if (grayscale) {
+      data[i] = value;
+      data[i + 1] = value;
+      data[i + 2] = value;
+      data[i + 3] = 255;
+      continue;
+    }
+
+    data[i] = offset === 0 ? value : 0;
+    data[i + 1] = offset === 1 ? value : 0;
+    data[i + 2] = offset === 2 ? value : 0;
+    data[i + 3] = 255;
+  }
+
+  const tempCanvas = document.createElement("canvas");
+  tempCanvas.width = originalImageData.width;
+  tempCanvas.height = originalImageData.height;
+
+  tempCanvas.getContext("2d").putImageData(preview, 0, 0);
+
+  previewCtx.clearRect(0, 0, 48, 48);
+  previewCtx.drawImage(tempCanvas, 0, 0, 48, 48);
+}

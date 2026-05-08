@@ -310,3 +310,54 @@ hr {
     border-top: 1px solid var(--border);
   }
 }
+
+.channels-panel {
+  margin-bottom: 24px;
+}
+
+.channels-panel h3 {
+  margin-bottom: 12px;
+}
+
+.channels-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.channel-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 8px;
+
+  border: 1px solid var(--border);
+  border-radius: 10px;
+
+  background: transparent;
+  color: inherit;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.channel-item:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+.channel-item.active {
+  border-color: #4ea1ff;
+  background: rgba(78,161,255,0.12);
+}
+
+.channel-item canvas {
+  width: 48px;
+  height: 48px;
+
+  border-radius: 6px;
+  border: 1px solid var(--border);
+
+  image-rendering: pixelated;
+}
