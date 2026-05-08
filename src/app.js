@@ -4,6 +4,9 @@ import { replaceExtension } from "./utils.js";
 const fileInput = document.getElementById("fileInput");
 const canvas = document.getElementById("canvas");
 const channelsList = document.getElementById("channelsList");
+const labL = document.getElementById("lab-l");
+const labA = document.getElementById("lab-a");
+const labB = document.getElementById("lab-b");
 const ctx = canvas.getContext("2d", { willReadFrequently: true });
 const channelState = {
   r: true,
@@ -207,6 +210,13 @@ function pickPixel(event) {
   pixelPositionEl.textContent = `${x}, ${y}`;
   pixelRgbaEl.textContent = `${r}, ${g}, ${b}, ${a}`;
   pixelHexEl.textContent = hex;
+
+  const lab = rgbToLab(r, g, b);
+
+  document.getElementById("lab-l").textContent = lab.l.toFixed(2);
+  document.getElementById("lab-a").textContent = lab.a.toFixed(2);
+  document.getElementById("lab-b").textContent = lab.b.toFixed(2);
+
   colorPreviewEl.style.background = `rgba(${r}, ${g}, ${b}, ${a / 255})`;
   statusTextEl.textContent = `Пипетка: x=${x}, y=${y}, RGBA(${r}, ${g}, ${b}, ${a})`;
 }
@@ -359,4 +369,80 @@ function createChannelPreview(channel, offset, grayscale = false) {
   previewCtx.drawImage(tempCanvas, 0, 0, 48, 48);
 }
 
+canvas.addEventListener("click", (event) => {
+  if (activeTool !== "eyedropper") return;
+  if (!originalImageData) return;
 
+  const rect = canvas.getBoundingClientRect();
+
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+
+  const x = Math.floor((event.clientX - rect.left) * scaleX);
+  const y = Math.floor((event.clientY - rect.top) * scaleY);
+
+  const index = (y * originalImageData.width + x) * 4;
+
+  const r = originalImageData.data[index];
+  const g = originalImageData.data[index + 1];
+  const b = originalImageData.data[index + 2];
+  const a = originalImageData.data[index + 3];
+
+  const lab = rgbToLab(r, g, b);
+
+  document.getElementById("pixel-x").textContent = x;
+  document.getElementById("pixel-y").textContent = y;
+
+  document.getElementById("pixel-r").textContent = r;
+  document.getElementById("pixel-g").textContent = g;
+  document.getElementById("pixel-b").textContent = b;
+  document.getElementById("pixel-a").textContent = a;
+
+  document.getElementById("lab-l").textContent = lab.l.toFixed(2);
+  document.getElementById("lab-a").textContent = lab.a.toFixed(2);
+  document.getElementById("lab-b").textContent = lab.b.toFixed(2);
+});
+
+function rgbToLab(r, g, b) {
+  let [x, y, z] = rgbToXyz(r, g, b);
+
+  x /= 95.047;
+  y /= 100.0;
+  z /= 108.883;
+
+  x = pivotLab(x);
+  y = pivotLab(y);
+  z = pivotLab(z);
+
+  return {
+    l: 116 * y - 16,
+    a: 500 * (x - y),
+    b: 200 * (y - z),
+  };
+}
+
+function rgbToXyz(r, g, b) {
+  r /= 255;
+  g /= 255;
+  b /= 255;
+
+  r = r > 0.04045 ? Math.pow((r + 0.055) / 1.055, 2.4) : r / 12.92;
+  g = g > 0.04045 ? Math.pow((g + 0.055) / 1.055, 2.4) : g / 12.92;
+  b = b > 0.04045 ? Math.pow((b + 0.055) / 1.055, 2.4) : b / 12.92;
+
+  r *= 100;
+  g *= 100;
+  b *= 100;
+
+  return [
+    r * 0.4124 + g * 0.3576 + b * 0.1805,
+    r * 0.2126 + g * 0.7152 + b * 0.0722,
+    r * 0.0193 + g * 0.1192 + b * 0.9505,
+  ];
+}
+
+function pivotLab(n) {
+  return n > 0.008856
+    ? Math.pow(n, 1 / 3)
+    : 7.787 * n + 16 / 116;
+}
