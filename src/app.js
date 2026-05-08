@@ -9,11 +9,14 @@ const labA = document.getElementById("lab-a");
 const labB = document.getElementById("lab-b");
 const ctx = canvas.getContext("2d", { willReadFrequently: true });
 const channelState = {
+  gray: true,
   r: true,
   g: true,
   b: true,
   a: true,
 };
+
+let currentChannelMode = "rgba";
 
 let originalImageData = null;
 
@@ -146,6 +149,9 @@ async function loadStandardImage(file) {
   state.colorDepth = "32 бит (RGBA)";
   state.hasMask = hasAnyTransparency(imageData);
 
+  currentChannelMode = "rgba";
+  setupChannelPanel("rgba");
+
   renderImageData(imageData);
 }
 
@@ -170,7 +176,15 @@ async function loadGB7(file) {
   state.colorDepth = result.hasMask ? "8 бит (7 Gray + 1 mask)" : "7 бит (Gray)";
   state.hasMask = result.hasMask;
 
+  currentChannelMode = "gb7";
+  setupChannelPanel("gb7");
+
   renderImageData(result.imageData);
+
+  originalImageData = result.imageData;
+
+  updateChannelPreviews();
+  applyChannels();
 }
 
 function componentToHex(value) {
@@ -299,6 +313,39 @@ function applyChannels() {
 
   const data = imageData.data;
 
+  if (currentChannelMode === "gb7") {
+    for (let i = 0; i < data.length; i += 4) {
+      const gray = originalImageData.data[i];
+      const alpha = originalImageData.data[i + 3];
+
+      if (channelState.gray && channelState.a) {
+        data[i] = gray;
+        data[i + 1] = gray;
+        data[i + 2] = gray;
+        data[i + 3] = alpha;
+      } else if (channelState.gray && !channelState.a) {
+        data[i] = gray;
+        data[i + 1] = gray;
+        data[i + 2] = gray;
+        data[i + 3] = 255;
+      } else if (!channelState.gray && channelState.a) {
+        data[i] = alpha;
+        data[i + 1] = alpha;
+        data[i + 2] = alpha;
+        data[i + 3] = 255;
+      } else {
+        data[i] = 0;
+        data[i + 1] = 0;
+        data[i + 2] = 0;
+        data[i + 3] = 255;
+      }
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+    state.imageData = imageData;
+    return;
+  }
+
   const onlyAlpha =
     !channelState.r &&
     !channelState.g &&
@@ -331,6 +378,12 @@ function applyChannels() {
 
 function updateChannelPreviews() {
   if (!originalImageData) return;
+
+  if (currentChannelMode === "gb7") {
+    createChannelPreview("gray", 0, true);
+    createChannelPreview("a", 3, true);
+    return;
+  }
 
   createChannelPreview("r", 0);
   createChannelPreview("g", 1);
@@ -429,4 +482,54 @@ function pivotLab(n) {
   return n > 0.008856
     ? Math.pow(n, 1 / 3)
     : 7.787 * n + 16 / 116;
+}
+
+function setupChannelPanel(mode) {
+  if (!channelsList) return;
+
+  if (mode === "gb7") {
+    channelState.gray = true;
+    channelState.a = true;
+
+    channelsList.innerHTML = `
+      <button class="channel-item active" data-channel="gray">
+        <canvas width="80" height="50" id="preview-gray"></canvas>
+        <span>Gray</span>
+      </button>
+
+      <button class="channel-item active" data-channel="a">
+        <canvas width="80" height="50" id="preview-a"></canvas>
+        <span>Alpha</span>
+      </button>
+    `;
+
+    return;
+  }
+
+  channelState.r = true;
+  channelState.g = true;
+  channelState.b = true;
+  channelState.a = true;
+
+  channelsList.innerHTML = `
+    <button class="channel-item active" data-channel="r">
+      <canvas width="80" height="50" id="preview-r"></canvas>
+      <span>Red</span>
+    </button>
+
+    <button class="channel-item active" data-channel="g">
+      <canvas width="80" height="50" id="preview-g"></canvas>
+      <span>Green</span>
+    </button>
+
+    <button class="channel-item active" data-channel="b">
+      <canvas width="80" height="50" id="preview-b"></canvas>
+      <span>Blue</span>
+    </button>
+
+    <button class="channel-item active" data-channel="a">
+      <canvas width="80" height="50" id="preview-a"></canvas>
+      <span>Alpha</span>
+    </button>
+  `;
 }
