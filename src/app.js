@@ -262,11 +262,8 @@ fileInput.addEventListener("change", async (event) => {
   }
 });
 
-
-
 updateInfoPanel();
 setActiveTool("cursor");
-
 
 channelsList?.addEventListener("click", (event) => {
     originalImageData.width,
@@ -286,6 +283,30 @@ channelsList?.addEventListener("click", (event) => {
 
   ctx.putImageData(imageData, 0, 0);
 });
+
+function applyChannels() {
+  if (!originalImageData) return;
+
+  const imageData = new ImageData(
+    new Uint8ClampedArray(originalImageData.data),
+    originalImageData.width,
+    originalImageData.height
+  );
+
+  const data = imageData.data;
+
+  for (let i = 0; i < data.length; i += 4) {
+    if (!channelState.r) data[i] = 0;
+    if (!channelState.g) data[i + 1] = 0;
+    if (!channelState.b) data[i + 2] = 0;
+
+    if (!channelState.a) {
+      data[i + 3] = 255;
+    }
+  }
+
+  ctx.putImageData(imageData, 0, 0);
+}
 
 function updateChannelPreviews() {
   if (!originalImageData) return;
@@ -337,3 +358,5 @@ function createChannelPreview(channel, offset, grayscale = false) {
   previewCtx.clearRect(0, 0, 48, 48);
   previewCtx.drawImage(tempCanvas, 0, 0, 48, 48);
 }
+
+
