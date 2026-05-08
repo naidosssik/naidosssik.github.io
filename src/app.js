@@ -276,22 +276,16 @@ updateInfoPanel();
 setActiveTool("cursor");
 
 channelsList?.addEventListener("click", (event) => {
-    originalImageData.width,
-    originalImageData.height
+  const button = event.target.closest(".channel-item");
 
-  const data = imageData.data;
+  if (!button) return;
 
-  for (let i = 0; i < data.length; i += 4) {
-    if (!channelState.r) data[i] = 0;
-    if (!channelState.g) data[i + 1] = 0;
-    if (!channelState.b) data[i + 2] = 0;
+  const channel = button.dataset.channel;
 
-    if (!channelState.a) {
-      data[i + 3] = 255;
-    }
-  }
+  channelState[channel] = !channelState[channel];
+  button.classList.toggle("active", channelState[channel]);
 
-  ctx.putImageData(imageData, 0, 0);
+  applyChannels();
 });
 
 function applyChannels() {
@@ -305,17 +299,34 @@ function applyChannels() {
 
   const data = imageData.data;
 
-  for (let i = 0; i < data.length; i += 4) {
-    if (!channelState.r) data[i] = 0;
-    if (!channelState.g) data[i + 1] = 0;
-    if (!channelState.b) data[i + 2] = 0;
+  const onlyAlpha =
+    !channelState.r &&
+    !channelState.g &&
+    !channelState.b &&
+    channelState.a;
 
-    if (!channelState.a) {
+  for (let i = 0; i < data.length; i += 4) {
+    const r = originalImageData.data[i];
+    const g = originalImageData.data[i + 1];
+    const b = originalImageData.data[i + 2];
+    const a = originalImageData.data[i + 3];
+
+    if (onlyAlpha) {
+      data[i] = a;
+      data[i + 1] = a;
+      data[i + 2] = a;
       data[i + 3] = 255;
+      continue;
     }
+
+    data[i] = channelState.r ? r : 0;
+    data[i + 1] = channelState.g ? g : 0;
+    data[i + 2] = channelState.b ? b : 0;
+    data[i + 3] = channelState.a ? a : 255;
   }
 
   ctx.putImageData(imageData, 0, 0);
+  state.imageData = imageData;
 }
 
 function updateChannelPreviews() {
@@ -330,7 +341,7 @@ function updateChannelPreviews() {
 function createChannelPreview(channel, offset, grayscale = false) {
   const previewCanvas = document.getElementById(`preview-${channel}`);
 
-  if (!previewCanvas) return;
+  if (!previewCanvas || !originalImageData) return;
 
   const previewCtx = previewCanvas.getContext("2d");
 
@@ -343,7 +354,7 @@ function createChannelPreview(channel, offset, grayscale = false) {
   const data = preview.data;
 
   for (let i = 0; i < data.length; i += 4) {
-    const value = data[i + offset];
+    const value = originalImageData.data[i + offset];
 
     if (grayscale) {
       data[i] = value;
@@ -363,45 +374,18 @@ function createChannelPreview(channel, offset, grayscale = false) {
   tempCanvas.width = originalImageData.width;
   tempCanvas.height = originalImageData.height;
 
-  tempCanvas.getContext("2d").putImageData(preview, 0, 0);
+  const tempCtx = tempCanvas.getContext("2d");
+  tempCtx.putImageData(preview, 0, 0);
 
-  previewCtx.clearRect(0, 0, 48, 48);
-  previewCtx.drawImage(tempCanvas, 0, 0, 48, 48);
+  previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+  previewCtx.drawImage(
+    tempCanvas,
+    0,
+    0,
+    previewCanvas.width,
+    previewCanvas.height
+  );
 }
-
-canvas.addEventListener("click", (event) => {
-  if (activeTool !== "eyedropper") return;
-  if (!originalImageData) return;
-
-  const rect = canvas.getBoundingClientRect();
-
-  const scaleX = canvas.width / rect.width;
-  const scaleY = canvas.height / rect.height;
-
-  const x = Math.floor((event.clientX - rect.left) * scaleX);
-  const y = Math.floor((event.clientY - rect.top) * scaleY);
-
-  const index = (y * originalImageData.width + x) * 4;
-
-  const r = originalImageData.data[index];
-  const g = originalImageData.data[index + 1];
-  const b = originalImageData.data[index + 2];
-  const a = originalImageData.data[index + 3];
-
-  const lab = rgbToLab(r, g, b);
-
-  document.getElementById("pixel-x").textContent = x;
-  document.getElementById("pixel-y").textContent = y;
-
-  document.getElementById("pixel-r").textContent = r;
-  document.getElementById("pixel-g").textContent = g;
-  document.getElementById("pixel-b").textContent = b;
-  document.getElementById("pixel-a").textContent = a;
-
-  document.getElementById("lab-l").textContent = lab.l.toFixed(2);
-  document.getElementById("lab-a").textContent = lab.a.toFixed(2);
-  document.getElementById("lab-b").textContent = lab.b.toFixed(2);
-});
 
 function rgbToLab(r, g, b) {
   let [x, y, z] = rgbToXyz(r, g, b);
