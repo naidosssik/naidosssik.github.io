@@ -107,35 +107,17 @@ body { min-height: 100vh; }
 
 .workspace {
   display: grid;
-  grid-template-columns: 128px minmax(0, 1fr) 320px;
+  grid-template-columns: 90px minmax(0, 1fr) 320px;
   min-height: 0;
 }
 
 .tools-panel {
   background: #24262b;
   border-right: 1px solid var(--border);
-  padding: 12px 10px;
+  padding: 14px 10px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-}
-
-
-.file-actions,
-.tools-list {
-  display: grid;
-  gap: 8px;
-}
-
-.file-actions__button {
-  width: 100%;
-  justify-content: center;
-  text-align: center;
-}
-
-.tools-panel .save-menu__dropdown {
-  left: 0;
-  right: auto;
+  gap: 10px;
 }
 
 .tool-button {
@@ -318,7 +300,7 @@ hr {
 
 @media (max-width: 1000px) {
   .workspace {
-    grid-template-columns: 112px minmax(0, 1fr);
+    grid-template-columns: 74px minmax(0, 1fr);
     grid-template-rows: 1fr auto;
   }
 
