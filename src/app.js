@@ -1,3 +1,6 @@
+import { encodeGB7, decodeGB7 } from "./gb7.js";
+import { replaceExtension } from "./utils.js";
+
 const fileInput = document.getElementById("fileInput");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d", { willReadFrequently: true });
@@ -22,39 +25,58 @@ const state = {
   colorDepth: "",
   hasMask: false,
   imageData: null,
-
 };
-
-
 
 function downloadBlob(blob, fileName) {
   const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = fileName;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+
   URL.revokeObjectURL(url);
+}
+
+function exportCanvasImage(type, quality = 0.92) {
+  if (!state.imageData) {
+    alert("Сначала загрузите изображение.");
+    return;
+  }
+
+  canvas.toBlob((blob) => {
+    if (!blob) {
+      alert("Не удалось сформировать файл.");
+      return;
+    }
+
+    const extension = type === "image/png" ? "png" : "jpg";
+    const fileName = replaceExtension(state.fileName || "image", extension);
+
+    downloadBlob(blob, fileName);
+  }, type, quality);
 }
 
 function renderImageData(imageData) {
   canvas.width = imageData.width;
   canvas.height = imageData.height;
-  ctx.putImageData(imageData, 0, 0);
   canvas.style.display = "block";
+
+  ctx.putImageData(imageData, 0, 0);
 
   state.width = imageData.width;
   state.height = imageData.height;
   state.imageData = imageData;
-}
 
+  updateInfoPanel();
+}
 
 function updateInfoPanel() {
   fileNameEl.textContent = state.fileName || "—";
   fileFormatEl.textContent = state.format || "—";
-  imageSizeEl.textContent =
-    state.width && state.height ? `${state.width} × ${state.height}` : "—";
+  imageSizeEl.textContent = state.width && state.height ? `${state.width} × ${state.height}` : "—";
   colorDepthEl.textContent = state.colorDepth || "—";
   maskInfoEl.textContent = state.hasMask ? "есть" : "нет";
 
@@ -71,68 +93,66 @@ async function loadStandardImage(file) {
 
   canvas.width = bitmap.width;
   canvas.height = bitmap.height;
+
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(bitmap, 0, 0);
 
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-  state.originalImageData = imageData;
   state.fileName = file.name;
   state.format = file.type.includes("png") ? "PNG" : "JPG";
   state.colorDepth = "32 бит (RGBA)";
   state.hasMask = hasAnyTransparency(imageData);
-  
 
   renderImageData(imageData);
-  updateInfoPanel();
 }
 
 function hasAnyTransparency(imageData) {
   const data = imageData.data;
+
   for (let i = 3; i < data.length; i += 4) {
     if (data[i] !== 255) {
       return true;
     }
   }
+
   return false;
 }
-
 
 async function loadGB7(file) {
   const arrayBuffer = await file.arrayBuffer();
   const result = decodeGB7(arrayBuffer);
 
-  state.originalImageData = imageData;
   state.fileName = file.name;
   state.format = "GB7";
   state.colorDepth = result.hasMask ? "8 бит (7 Gray + 1 mask)" : "7 бит (Gray)";
   state.hasMask = result.hasMask;
 
   renderImageData(result.imageData);
-  updateInfoPanel();
 }
 
-function exportCanvasImage(type, quality = 0.92) {
+downloadPngBtn.addEventListener("click", () => exportCanvasImage("image/png"));
+downloadJpgBtn.addEventListener("click", () => exportCanvasImage("image/jpeg", 0.92));
+
+downloadGb7Btn.addEventListener("click", () => {
   if (!state.imageData) {
     alert("Сначала загрузите изображение.");
     return;
   }
 
-  canvas.toBlob((blob) => {
-    if (!blob) {
-      alert("Не удалось сформировать файл.");
-      return;
-    }
+  const includeMask = maskCheckbox.checked;
+  const blob = encodeGB7(state.imageData, includeMask);
+  const fileName = replaceExtension(state.fileName || "image", "gb7");
 
-    const ext = type === "image/png" ? "png" : "jpg";
-    const name = replaceExtension(state.fileName || "image", ext);
-    downloadBlob(blob, name);
-  }, type, quality);
-}
+  downloadBlob(blob, fileName);
+});
 
 fileInput.addEventListener("change", async (event) => {
   const file = event.target.files?.[0];
-  if (!file) return;
+
+  if (!file) {
+    return;
+  }
 
   try {
     const lowerName = file.name.toLowerCase();
@@ -154,25 +174,6 @@ fileInput.addEventListener("change", async (event) => {
   } finally {
     fileInput.value = "";
   }
-});
-
-downloadPngBtn.addEventListener("click", () => {
-  exportCanvasImage("image/png");
-});
-
-downloadJpgBtn.addEventListener("click", () => {
-  exportCanvasImage("image/jpeg", 0.92);
-});
-
-downloadGb7Btn.addEventListener("click", () => {
-  if (!state.imageData) {
-    alert("Сначала загрузите изображение.");
-    return;
-  }
-
-  const blob = encodeGB7(state.imageData, maskCheckbox.checked);
-  const fileName = replaceExtension(state.fileName || "image", "gb7");
-  downloadBlob(blob, fileName);
 });
 
 updateInfoPanel();

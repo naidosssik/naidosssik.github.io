@@ -18,15 +18,21 @@
         <button id="downloadPngBtn" class="button">Скачать PNG</button>
         <button id="downloadJpgBtn" class="button">Скачать JPG</button>
         <button id="downloadGb7Btn" class="button">Скачать GB7</button>
-          <label class="mask-option">
-            <input type="checkbox" id="maskCheckbox" />
-            с маской
-          </label>
+        <label class="mask-option">
+          <input type="checkbox" id="maskCheckbox" />
+          GB7 с маской
+        </label>
       </div>
     </header>
 
     <main class="workspace">
-      <aside class="sidebar">
+      <section class="canvas-panel">
+        <div class="canvas-wrapper" id="canvasWrapper">
+          <canvas id="canvas"></canvas>
+        </div>
+      </section>
+
+      <aside class="info-panel">
         <h2>Информация</h2>
         <div class="info-list">
           <div><span>Имя файла:</span> <strong id="fileName">—</strong></div>
@@ -35,20 +41,14 @@
           <div><span>Глубина цвета:</span> <strong id="colorDepth">—</strong></div>
           <div><span>Маска:</span> <strong id="maskInfo">—</strong></div>
         </div>
-        
+
         <hr />
 
         <p class="hint">
-          Поддерживаются PNG, JPG и GB7.  
+          Поддерживаются PNG, JPG и GB7.
           Для GB7 изображение хранится в оттенках серого, 7 бит яркости + 1 бит маски.
         </p>
       </aside>
-
-      <section class="canvas-panel">
-        <div class="canvas-wrapper" id="canvasWrapper">
-          <canvas id="canvas"></canvas>
-        </div>
-      </section>
     </main>
 
     <footer class="status-bar">
@@ -56,6 +56,6 @@
     </footer>
   </div>
 
-  <script src="src/app.js"></script>
+  <script type="module" src="src/app.js"></script>
 </body>
 </html>
