@@ -1,64 +1,61 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GrayBit-7 Viewer</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="app">
-    <div class="toolbar">
+    <header class="toolbar">
       <div class="toolbar__group">
-        <input type="file" id="fileInput" accept=".png,.jpg,.jpeg,.gb7" hidden>
-        <label for="fileInput" class="button button--primary">Открыть</label>
-        <button class="button" id="downloadPngBtn">Скачать PNG</button>
-        <button class="button" id="downloadJpgBtn">Скачать JPG</button>
-        <button class="button" id="downloadGb7Btn">Скачать GB7</button>
-        <label class="mask-option">
-          <input type="checkbox" id="maskCheckbox">
-          GB7 с маской
+        <label class="button button--primary">
+          <input id="fileInput" type="file" accept=".png,.jpg,.jpeg,.gb7,image/png,image/jpeg" hidden />
+          Открыть
         </label>
-      </div>
-    </div>
 
-    <div class="workspace">
+        <button id="downloadPngBtn" class="button">Скачать PNG</button>
+        <button id="downloadJpgBtn" class="button">Скачать JPG</button>
+        <button id="downloadGb7Btn" class="button">Скачать GB7</button>
+          <label class="mask-option">
+            <input type="checkbox" id="maskCheckbox" />
+            с маской
+          </label>
+      </div>
+    </header>
+
+    <main class="workspace">
       <aside class="sidebar">
         <h2>Информация</h2>
         <div class="info-list">
-          <div>Имя файла: <span id="fileName">—</span></div>
-          <div>Формат: <span id="fileFormat">—</span></div>
-          <div>Размер: <span id="imageSize">—</span></div>
-          <div>Глубина цвета: <span id="colorDepth">—</span></div>
-          <div>Маска: <span id="maskInfo">—</span></div>
+          <div><span>Имя файла:</span> <strong id="fileName">—</strong></div>
+          <div><span>Формат:</span> <strong id="fileFormat">—</strong></div>
+          <div><span>Размер:</span> <strong id="imageSize">—</strong></div>
+          <div><span>Глубина цвета:</span> <strong id="colorDepth">—</strong></div>
+          <div><span>Маска:</span> <strong id="maskInfo">—</strong></div>
         </div>
+        
+        <hr />
 
-        <hr>
-
-        <h2>Пипетка</h2>
-        <div id="eyedropperResult" class="eyedropper-result">
-          <div class="pip-line">Координаты: <span id="pipCoord">—</span></div>
-          <div class="pip-line">RGB: <span id="pipRGB">—</span></div>
-          <div class="pip-line">CIELAB: <span id="pipLab">—</span></div>
-        </div>
-
-        <hr>
         <p class="hint">
-          Поддерживаются PNG, JPG и GB7.<br>
+          Поддерживаются PNG, JPG и GB7.  
           Для GB7 изображение хранится в оттенках серого, 7 бит яркости + 1 бит маски.
         </p>
       </aside>
 
-      <main class="canvas-panel">
-        <div class="canvas-wrapper">
+      <section class="canvas-panel">
+        <div class="canvas-wrapper" id="canvasWrapper">
           <canvas id="canvas"></canvas>
         </div>
-      </main>
-    </div>
+      </section>
+    </main>
 
-    <footer class="status-bar" id="statusText">Нет загруженного изображения</footer>
+    <footer class="status-bar">
+      <span id="statusText">Нет загруженного изображения</span>
+    </footer>
   </div>
 
-  <script type="module" src="app.js"></script>
+  <script src="src/app.js"></script>
 </body>
 </html>
