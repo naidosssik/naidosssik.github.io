@@ -9,19 +9,26 @@
 <body>
   <div class="app">
     <header class="toolbar">
+      <div class="toolbar__brand">GrayBit-7 Viewer</div>
+
       <div class="toolbar__group">
         <label class="button button--primary">
           <input id="fileInput" type="file" accept=".png,.jpg,.jpeg,.gb7,image/png,image/jpeg" hidden />
           Открыть
         </label>
 
-        <button id="downloadPngBtn" class="button">Скачать PNG</button>
-        <button id="downloadJpgBtn" class="button">Скачать JPG</button>
-        <button id="downloadGb7Btn" class="button">Скачать GB7</button>
-        <label class="mask-option">
-          <input type="checkbox" id="maskCheckbox" />
-          GB7 с маской
-        </label>
+        <div class="save-menu">
+          <button id="saveMenuBtn" class="button" type="button">Сохранить ▾</button>
+          <div class="save-menu__dropdown" aria-label="Меню сохранения">
+            <button id="downloadPngBtn" type="button">Скачать PNG</button>
+            <button id="downloadJpgBtn" type="button">Скачать JPG</button>
+            <button id="downloadGb7Btn" type="button">Скачать GB7</button>
+            <label class="mask-option">
+              <input type="checkbox" id="maskCheckbox" />
+              GB7 с маской
+            </label>
+          </div>
+        </div>
       </div>
     </header>
 
