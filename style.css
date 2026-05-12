@@ -161,7 +161,11 @@ body { min-height: 100vh; }
   background: var(--panel);
   border-left: 1px solid var(--border);
   padding: 16px;
-  overflow: auto;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  max-height: calc(100vh - 80px);
 }
 
 .info-panel h2,
