@@ -146,7 +146,14 @@ async function loadStandardImage(file) {
 
   state.fileName = file.name;
   state.format = file.type.includes("png") ? "PNG" : "JPG";
-  state.colorDepth = "32 бит (RGBA)";
+  const fileExtension = file.name.split(".").pop().toLowerCase();
+
+  if (fileExtension === "jpg" || fileExtension === "jpeg") {
+    state.colorDepth = "24 бит (RGB)";
+  } else {
+    state.colorDepth = state.hasMask ? "32 бит (RGBA)" : "24 бит (RGB)";
+  }
+  
   state.hasMask = hasAnyTransparency(imageData);
 
   currentChannelMode = "rgba";
@@ -485,6 +492,12 @@ function pivotLab(n) {
 }
 
 function setupChannelPanel(mode) {
+  channelState.gray = true;
+  channelState.r = true;
+  channelState.g = true;
+  channelState.b = true;
+  channelState.a = true;
+
   if (!channelsList) return;
 
   if (mode === "gb7") {
