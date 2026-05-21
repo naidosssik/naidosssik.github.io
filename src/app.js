@@ -1,5 +1,6 @@
 import { encodeGB7, decodeGB7 } from "./gb7.js";
 import { replaceExtension } from "./utils.js";
+import { initLevelsTool } from "./levels.js";
 
 const fileInput = document.getElementById("fileInput");
 const canvas = document.getElementById("canvas");
@@ -48,6 +49,7 @@ const state = {
   imageData: null,
   activeTool: "cursor",
 };
+
 
 function downloadBlob(blob, fileName) {
   const url = URL.createObjectURL(blob);
@@ -313,6 +315,19 @@ fileInput.addEventListener("change", async (event) => {
 
 updateInfoPanel();
 setActiveTool("cursor");
+
+initLevelsTool({
+  state,
+  canvas,
+  ctx,
+  getOriginalImageData: () => originalImageData,
+  setOriginalImageData: (imageData) => {
+    originalImageData = imageData;
+  },
+  updateInfoPanel,
+  updateChannelPreviews,
+  applyChannels,
+});
 
 channelsList?.addEventListener("click", (event) => {
   const button = event.target.closest(".channel-item");

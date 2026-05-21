@@ -476,3 +476,115 @@ hr {
     rgba(70, 70, 70, 0.9)
   );
 }
+
+.levels-dialog {
+  width: min(720px, 94vw);
+  border: none;
+  border-radius: 24px;
+  padding: 0;
+  background: #2b2d31;
+  color: #f4f4f5;
+}
+
+.levels-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.levels-dialog__content {
+  padding: 24px;
+}
+
+.levels-dialog__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.levels-dialog__header h2 {
+  margin: 0;
+  font-size: 26px;
+}
+
+.dialog-close {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: #3a3d44;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.levels-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.levels-row select {
+  width: 220px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid #4b4f58;
+  background: #1f2126;
+  color: white;
+}
+
+.histogram-box {
+  height: 180px;
+  margin: 18px 0;
+  border-radius: 14px;
+  background: #1c1e22;
+  border: 1px solid #444851;
+  overflow: hidden;
+}
+
+#histogramCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.levels-controls {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.levels-controls label {
+  display: grid;
+  grid-template-columns: 120px 1fr 48px;
+  align-items: center;
+  gap: 12px;
+}
+
+.preview-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.levels-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.levels-dialog__actions button {
+  padding: 9px 16px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background: #3a3d44;
+  color: white;
+}
+
+#levelsApplyBtn {
+  background: #4f8cff;
+}

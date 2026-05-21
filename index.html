@@ -12,10 +12,14 @@
       <div class="toolbar__brand">GrayBit-7 Viewer</div>
 
       <div class="toolbar__group">
+        <button class="button button--primary" id="levelsBtn" type="button">
+          Уровни
+        </button>
         <label class="button button--primary">
           <input id="fileInput" type="file" accept=".png,.jpg,.jpeg,.gb7,image/png,image/jpeg" hidden />
           Открыть
         </label>
+        
 
         <div class="save-menu">
           <button id="saveMenuBtn" class="button" type="button">Сохранить ▾</button>
@@ -121,6 +125,69 @@
       <span id="statusText">Нет загруженного изображения</span>
     </footer>
   </div>
+
+  <dialog class="levels-dialog" id="levelsDialog">
+  <form method="dialog" class="levels-dialog__content">
+    <div class="levels-dialog__header">
+      <h2>Уровни</h2>
+      <button class="dialog-close" id="levelsCancelX" type="button">×</button>
+    </div>
+
+    <div class="levels-row">
+      <label for="levelsChannel">Канал:</label>
+      <select id="levelsChannel">
+        <option value="master">Master</option>
+        <option value="r">Red</option>
+        <option value="g">Green</option>
+        <option value="b">Blue</option>
+        <option value="a">Alpha</option>
+      </select>
+    </div>
+
+    <div class="levels-row">
+      <label for="histogramMode">Гистограмма:</label>
+      <select id="histogramMode">
+        <option value="linear">Линейная</option>
+        <option value="log">Логарифмическая</option>
+      </select>
+    </div>
+
+    <div class="histogram-box">
+      <canvas id="histogramCanvas" width="512" height="180"></canvas>
+    </div>
+
+    <div class="levels-controls">
+      <label>
+        Черная точка:
+        <input id="blackInput" type="range" min="0" max="255" value="0">
+        <span id="blackValue">0</span>
+      </label>
+
+      <label>
+        Гамма:
+        <input id="gammaInput" type="range" min="0.1" max="9.9" step="0.1" value="1">
+        <span id="gammaValue">1.0</span>
+      </label>
+
+      <label>
+        Белая точка:
+        <input id="whiteInput" type="range" min="0" max="255" value="255">
+        <span id="whiteValue">255</span>
+      </label>
+    </div>
+
+    <label class="preview-checkbox">
+      <input id="levelsPreview" type="checkbox" checked>
+      Предпросмотр
+    </label>
+
+    <div class="levels-dialog__actions">
+      <button id="levelsResetBtn" type="button">Сброс</button>
+      <button id="levelsCancelBtn" type="button">Отмена</button>
+      <button id="levelsApplyBtn" type="button">Применить</button>
+    </div>
+  </form>
+</dialog>
 
   <script type="module" src="src/app.js"></script>
 </body>
