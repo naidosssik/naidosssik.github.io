@@ -455,7 +455,11 @@ function createChannelPreview(channel, offset, grayscale = false) {
   const tempCtx = tempCanvas.getContext("2d");
   tempCtx.putImageData(preview, 0, 0);
 
+  previewCanvas.width = 300;
+  previewCanvas.height = 150;
+
   previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+
   previewCtx.drawImage(
     tempCanvas,
     0,
@@ -512,18 +516,20 @@ function pivotLab(n) {
 function setupChannelPanel(mode) {
   if (!channelsList) return;
 
+  channelsList.innerHTML = "";
+
   if (mode === "gb7") {
     channelState.gray = true;
     channelState.a = true;
 
     channelsList.innerHTML = `
       <button class="channel-item active" data-channel="gray">
-        <canvas width="80" height="50" id="preview-gray"></canvas>
+        <canvas class="channel-preview" id="preview-gray"></canvas>
         <span>Gray</span>
       </button>
 
       <button class="channel-item active" data-channel="a">
-        <canvas width="80" height="50" id="preview-a"></canvas>
+        <canvas class="channel-preview" id="preview-a"></canvas>
         <span>Alpha</span>
       </button>
     `;
@@ -538,22 +544,22 @@ function setupChannelPanel(mode) {
 
   channelsList.innerHTML = `
     <button class="channel-item active" data-channel="r">
-      <canvas width="80" height="50" id="preview-r"></canvas>
+      <canvas class="channel-preview" id="preview-r"></canvas>
       <span>Red</span>
     </button>
 
     <button class="channel-item active" data-channel="g">
-      <canvas width="80" height="50" id="preview-g"></canvas>
+      <canvas class="channel-preview" id="preview-g"></canvas>
       <span>Green</span>
     </button>
 
     <button class="channel-item active" data-channel="b">
-      <canvas width="80" height="50" id="preview-b"></canvas>
+      <canvas class="channel-preview" id="preview-b"></canvas>
       <span>Blue</span>
     </button>
 
     <button class="channel-item active" data-channel="a">
-      <canvas width="80" height="50" id="preview-a"></canvas>
+      <canvas class="channel-preview" id="preview-a"></canvas>
       <span>Alpha</span>
     </button>
   `;
