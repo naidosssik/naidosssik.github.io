@@ -33,8 +33,8 @@ const imageSizeEl = document.getElementById("imageSize");
 const colorDepthEl = document.getElementById("colorDepth");
 const maskInfoEl = document.getElementById("maskInfo");
 const statusTextEl = document.getElementById("statusText");
-const pixelPositionEl = document.getElementById("pixelPosition");
-const pixelRgbaEl = document.getElementById("pixelRgba");
+// const pixelPositionEl = document.getElementById("pixelPosition");
+// const pixelRgbaEl = document.getElementById("pixelRgba");
 const pixelHexEl = document.getElementById("pixelHex");
 const colorPreviewEl = document.getElementById("colorPreview");
 
@@ -203,9 +203,10 @@ function rgbaToHex(r, g, b) {
 }
 
 function resetPixelInfo() {
-  pixelPositionEl.textContent = "—";
-  pixelRgbaEl.textContent = "—";
   pixelHexEl.textContent = "—";
+  labL.textContent = "0";
+  labA.textContent = "0";
+  labB.textContent = "0";
   colorPreviewEl.style.background = "";
 }
 
@@ -228,8 +229,8 @@ function pickPixel(event) {
   const [r, g, b, a] = pixel;
   const hex = rgbaToHex(r, g, b);
 
-  pixelPositionEl.textContent = `${x}, ${y}`;
-  pixelRgbaEl.textContent = `${r}, ${g}, ${b}, ${a}`;
+  // pixelPositionEl.textContent = `${x}, ${y}`;
+  // pixelRgbaEl.textContent = `${r}, ${g}, ${b}, ${a}`;
   pixelHexEl.textContent = hex;
 
   const lab = rgbToLab(r, g, b);

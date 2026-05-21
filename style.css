@@ -22,10 +22,13 @@ body {
   color: var(--text);
 }
 
-body { min-height: 100vh; }
+body { 
+  min-height: 100vh; 
+}
 
 .app {
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   display: grid;
   grid-template-rows: auto 1fr auto;
 }
@@ -220,8 +223,8 @@ body { min-height: 100vh; }
 
 .color-card {
   display: flex;
-  gap: 12px;
   align-items: center;
+  gap: 16px;
 }
 
 .color-preview {
@@ -240,10 +243,19 @@ body { min-height: 100vh; }
 }
 
 .color-values {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 8px;
-  min-width: 0;
-  font-size: 14px;
+}
+
+.pixel-lab {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.pixel-lab p {
+  margin: 6px 0;
 }
 
 .hint {
