@@ -153,12 +153,12 @@ async function loadStandardImage(file) {
   } else {
     state.colorDepth = state.hasMask ? "32 бит (RGBA)" : "24 бит (RGB)";
   }
-  
+
   state.hasMask = hasAnyTransparency(imageData);
 
   currentChannelMode = "rgba";
   setupChannelPanel("rgba");
-
+  resetChannels("rgba");
   renderImageData(imageData);
 }
 
@@ -184,11 +184,11 @@ async function loadGB7(file) {
   state.hasMask = result.hasMask;
 
   currentChannelMode = "gb7";
-  setupChannelPanel("gb7");
+  resetChannels("gb7");
 
   renderImageData(result.imageData);
 
-  originalImageData = result.imageData;
+  originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
   updateChannelPreviews();
   applyChannels();
@@ -492,12 +492,6 @@ function pivotLab(n) {
 }
 
 function setupChannelPanel(mode) {
-  channelState.gray = true;
-  channelState.r = true;
-  channelState.g = true;
-  channelState.b = true;
-  channelState.a = true;
-
   if (!channelsList) return;
 
   if (mode === "gb7") {
@@ -545,4 +539,16 @@ function setupChannelPanel(mode) {
       <span>Alpha</span>
     </button>
   `;
+}
+
+function resetChannels(mode = "rgba") {
+  currentChannelMode = mode;
+
+  channelState.gray = true;
+  channelState.r = true;
+  channelState.g = true;
+  channelState.b = true;
+  channelState.a = true;
+
+  setupChannelPanel(mode);
 }

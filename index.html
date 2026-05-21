@@ -34,15 +34,17 @@
 
     <main class="workspace">
       <aside class="tools-panel" aria-label="Инструменты">
-        <button class="tool-button tool-button--active" data-tool="cursor" type="button" title="Выделение / курсор">
-          <span class="tool-button__icon">↖</span>
-          <span class="tool-button__label">Курсор</span>
-        </button>
+      <button class="tool-button tool-button--active" data-tool="cursor" type="button" title="Курсор">
+        <svg class="tool-icon cursor-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 3L19 17H13L10 22L7.5 20L10.5 15H5V3Z"/>
+        </svg>
+      </button>
 
-        <button class="tool-button" data-tool="eyedropper" type="button" title="Пипетка">
-          <span class="tool-button__icon">⌕</span>
-          <span class="tool-button__label">Пипетка</span>
-        </button>
+      <button class="tool-button" data-tool="eyedropper" type="button" title="Пипетка">
+        <svg class="tool-icon eyedropper-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19.77 4.23a3 3 0 0 0-4.24 0l-1.4 1.4-1.06-1.06-1.41 1.41 1.06 1.06-6.9 6.9a2 2 0 0 0-.52.88l-.92 3.2a.5.5 0 0 0 .62.62l3.2-.92a2 2 0 0 0 .88-.52l6.9-6.9 1.06 1.06 1.41-1.41-1.06-1.06 1.4-1.4a3 3 0 0 0 0-4.24Z"/>
+        </svg>
+      </button>
       </aside>
 
       <section class="canvas-panel">
