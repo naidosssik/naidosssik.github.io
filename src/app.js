@@ -50,7 +50,6 @@ const state = {
   activeTool: "cursor",
 };
 
-
 function downloadBlob(blob, fileName) {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
@@ -316,19 +315,6 @@ fileInput.addEventListener("change", async (event) => {
 updateInfoPanel();
 setActiveTool("cursor");
 
-initLevelsTool({
-  state,
-  canvas,
-  ctx,
-  getOriginalImageData: () => originalImageData,
-  setOriginalImageData: (imageData) => {
-    originalImageData = imageData;
-  },
-  updateInfoPanel,
-  updateChannelPreviews,
-  applyChannels,
-});
-
 channelsList?.addEventListener("click", (event) => {
   const button = event.target.closest(".channel-item");
 
@@ -591,3 +577,30 @@ function resetChannels(mode = "rgba") {
 
   setupChannelPanel(mode);
 }
+
+// Подключение инструмента "Уровни".
+// Важно: динамический импорт не ломает загрузку изображений, если файл levels.js отсутствует или содержит ошибку.
+import("./levels.js")
+  .then(({ initLevelsTool }) => {
+    initLevelsTool({
+      getImageData: () => originalImageData,
+      renderImageData: (imageData) => {
+        canvas.width = imageData.width;
+        canvas.height = imageData.height;
+        canvas.style.display = "block";
+        emptyState.style.display = "none";
+        ctx.putImageData(imageData, 0, 0);
+        state.imageData = imageData;
+      },
+      commitImageData: (imageData) => {
+        originalImageData = imageData;
+        ctx.putImageData(imageData, 0, 0);
+        state.imageData = imageData;
+        updateChannelPreviews();
+        updateInfoPanel();
+      },
+    });
+  })
+  .catch((error) => {
+    console.warn("Инструмент Levels не подключился:", error);
+  });

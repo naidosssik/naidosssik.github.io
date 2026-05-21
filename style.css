@@ -477,114 +477,108 @@ hr {
   );
 }
 
+
+/* Levels dialog */
 .levels-dialog {
-  width: min(720px, 94vw);
-  border: none;
-  border-radius: 24px;
+  width: min(680px, calc(100vw - 32px));
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 16px;
   padding: 0;
-  background: #2b2d31;
-  color: #f4f4f5;
+  color: #f4f7fb;
+  background: #252932;
+  box-shadow: 0 24px 80px rgba(0,0,0,.45);
 }
 
 .levels-dialog::backdrop {
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(0,0,0,.55);
 }
 
 .levels-dialog__content {
-  padding: 24px;
+  padding: 18px;
 }
 
-.levels-dialog__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 18px;
-}
-
-.levels-dialog__header h2 {
-  margin: 0;
-  font-size: 26px;
-}
-
-.dialog-close {
-  width: 36px;
-  height: 36px;
-  border: none;
-  border-radius: 50%;
-  background: #3a3d44;
-  color: white;
-  font-size: 24px;
-  cursor: pointer;
-}
-
+.levels-dialog__header,
+.levels-dialog__actions,
 .levels-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 12px;
+  gap: 12px;
+}
+
+.levels-dialog__header h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.dialog-close {
+  border: 0;
+  border-radius: 8px;
+  padding: 4px 10px;
+  color: #f4f7fb;
+  background: rgba(255,255,255,.08);
+  cursor: pointer;
+}
+
+.levels-row {
+  margin-top: 14px;
 }
 
 .levels-row select {
-  width: 220px;
-  padding: 8px 10px;
+  min-width: 180px;
+  border: 1px solid rgba(255,255,255,.18);
   border-radius: 10px;
-  border: 1px solid #4b4f58;
-  background: #1f2126;
-  color: white;
-}
-
-.histogram-box {
-  height: 180px;
-  margin: 18px 0;
-  border-radius: 14px;
-  background: #1c1e22;
-  border: 1px solid #444851;
-  overflow: hidden;
+  padding: 8px 10px;
+  color: #f4f7fb;
+  background: #17191d;
 }
 
 #histogramCanvas {
   width: 100%;
-  height: 100%;
-  display: block;
+  height: 180px;
+  margin-top: 16px;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 12px;
+  background: #17191d;
 }
 
 .levels-controls {
   display: grid;
   gap: 12px;
-  margin-top: 14px;
+  margin-top: 16px;
 }
 
 .levels-controls label {
   display: grid;
-  grid-template-columns: 120px 1fr 48px;
-  align-items: center;
-  gap: 12px;
+  gap: 6px;
+  font-size: 14px;
 }
 
-.preview-checkbox {
-  display: flex;
+.levels-controls input[type="range"] {
+  width: 100%;
+}
+
+.levels-preview {
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin-top: 18px;
+  margin-top: 14px;
 }
 
 .levels-dialog__actions {
-  display: flex;
+  margin-top: 18px;
   justify-content: flex-end;
-  gap: 10px;
-  margin-top: 22px;
 }
 
 .levels-dialog__actions button {
-  padding: 9px 16px;
+  border: 0;
   border-radius: 10px;
-  border: none;
+  padding: 9px 14px;
+  color: #f4f7fb;
+  background: rgba(255,255,255,.11);
   cursor: pointer;
-  background: #3a3d44;
-  color: white;
 }
 
 #levelsApplyBtn {
-  background: #4f8cff;
+  background: #2f8cff;
 }
