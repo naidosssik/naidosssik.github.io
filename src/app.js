@@ -134,19 +134,21 @@ async function loadStandardImage(file) {
 
   canvas.width = bitmap.width;
   canvas.height = bitmap.height;
+  canvas.style.display = "block";
+  emptyState.style.display = "none";
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(bitmap, 0, 0);
+
   originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-  updateChannelPreviews();
-  applyChannels();
-
-  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const fileExtension = file.name.split(".").pop().toLowerCase();
 
   state.fileName = file.name;
   state.format = file.type.includes("png") ? "PNG" : "JPG";
-  const fileExtension = file.name.split(".").pop().toLowerCase();
+  state.width = bitmap.width;
+  state.height = bitmap.height;
+  state.hasMask = hasAnyTransparency(originalImageData);
 
   if (fileExtension === "jpg" || fileExtension === "jpeg") {
     state.colorDepth = "24 бит (RGB)";
@@ -154,12 +156,13 @@ async function loadStandardImage(file) {
     state.colorDepth = state.hasMask ? "32 бит (RGBA)" : "24 бит (RGB)";
   }
 
-  state.hasMask = hasAnyTransparency(imageData);
-
   currentChannelMode = "rgba";
-  setupChannelPanel("rgba");
+
   resetChannels("rgba");
-  renderImageData(imageData);
+  updateInfoPanel();
+  resetPixelInfo();
+  updateChannelPreviews();
+  applyChannels();
 }
 
 function hasAnyTransparency(imageData) {
