@@ -142,18 +142,32 @@ async function loadStandardImage(file) {
 
   originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-  const fileExtension = file.name.split(".").pop().toLowerCase();
-
   state.fileName = file.name;
-  state.format = file.type.includes("png") ? "PNG" : "JPG";
   state.width = bitmap.width;
   state.height = bitmap.height;
-  state.hasMask = hasAnyTransparency(originalImageData);
 
-  if (fileExtension === "jpg" || fileExtension === "jpeg") {
+  const fileExtension = file.name.split(".").pop().toLowerCase();
+
+  const isPng = fileExtension === "png";
+  const isJpeg =
+    fileExtension === "jpg" ||
+    fileExtension === "jpeg";
+
+  state.hasMask =
+    isPng && hasAnyTransparency(originalImageData);
+
+  if (isPng) {
+    state.format = "PNG";
+
+    state.colorDepth = state.hasMask
+      ? "32 бит (RGBA)"
+      : "24 бит (RGB)";
+  }
+
+  if (isJpeg) {
+    state.format = "JPG";
+    state.hasMask = false;
     state.colorDepth = "24 бит (RGB)";
-  } else {
-    state.colorDepth = state.hasMask ? "32 бит (RGBA)" : "24 бит (RGB)";
   }
 
   currentChannelMode = "rgba";
