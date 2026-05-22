@@ -12,25 +12,57 @@
       <div class="toolbar__brand">GrayBit-7 Viewer</div>
 
       <div class="toolbar__group">
-        <label class="button button--primary">
-          <input id="fileInput" type="file" accept=".png,.jpg,.jpeg,.gb7,image/png,image/jpeg" hidden />
-          Открыть
-        </label>
 
-        <div class="save-menu">
-          <button id="saveMenuBtn" class="button" type="button">Сохранить ▾</button>
-          <div class="save-menu__dropdown" aria-label="Меню сохранения">
-            <button id="downloadPngBtn" type="button">Скачать PNG</button>
-            <button id="downloadJpgBtn" type="button">Скачать JPG</button>
-            <button id="downloadGb7Btn" type="button">Скачать GB7</button>
+        <div class="menu-dropdown">
+          <button class="button button--primary" type="button">
+            Файл ▾
+          </button>
+
+          <div class="menu-dropdown__content">
+
+            <label class="menu-dropdown__item">
+              <input
+                id="fileInput"
+                type="file"
+                accept=".png,.jpg,.jpeg,.gb7,image/png,image/jpeg"
+                hidden
+              />
+              Открыть
+            </label>
+
+            <button id="downloadPngBtn" type="button">
+              Скачать PNG
+            </button>
+
+            <button id="downloadJpgBtn" type="button">
+              Скачать JPG
+            </button>
+
+            <button id="downloadGb7Btn" type="button">
+              Скачать GB7
+            </button>
+
             <label class="mask-option">
               <input type="checkbox" id="maskCheckbox" />
               GB7 с маской
             </label>
           </div>
         </div>
-              <button id="openLevelsBtn" class="button" type="button">Уровни</button>
+
+        <div class="menu-dropdown">
+          <button class="button" type="button">
+            Изображение ▾
+          </button>
+
+          <div class="menu-dropdown__content">
+            <button id="openLevelsBtn" type="button">
+              Уровни
+            </button>
+          </div>
+        </div>
+
       </div>
+
     </header>
 
     <main class="workspace">
