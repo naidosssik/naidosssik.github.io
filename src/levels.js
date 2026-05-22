@@ -73,7 +73,6 @@ export function initLevelsTool({
       clampControls();
       saveControlsToSettings();
       updateLabels();
-      drawHistogram();
       schedulePreview();
     });
   });
@@ -183,8 +182,16 @@ export function initLevelsTool({
       ? histogram.map((value) => Math.log10(value + 1))
       : histogram;
 
-    const width = histogramCanvas.width;
-    const height = histogramCanvas.height;
+    const dpr = window.devicePixelRatio || 1;
+    const rect = histogramCanvas.getBoundingClientRect();
+
+    histogramCanvas.width = Math.round(rect.width * dpr);
+    histogramCanvas.height = Math.round(rect.height * dpr);
+
+    histogramCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const width = rect.width;
+    const height = rect.height;
     const padding = 10;
     const graphWidth = width - padding * 2;
     const graphHeight = height - padding * 2;
