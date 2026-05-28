@@ -124,8 +124,8 @@ function renderImageData(imageData) {
 function updateInfoPanel() {
   fileNameEl.textContent = state.fileName || "—";
   fileFormatEl.textContent = state.format || "—";
-  imageSizeEl.textContent = state.width && state.height ? `${state.width} × ${state.height}` : "—";
-  colorDepthEl.textContent = state.colorDepth || "—";
+  if (imageSizeEl) imageSizeEl.textContent = `${state.width} × ${state.height}`;
+  if (colorDepthEl) colorDepthEl.textContent = state.colorDepth;
   maskInfoEl.textContent = state.hasMask ? "есть" : "нет";
   statusTextEl.textContent = getImageStatusText();
 }
