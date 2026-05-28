@@ -62,9 +62,6 @@ body {
   padding-left: 0;
 }
 
-
-
-
 .menu-dropdown {
   position: relative;
 }
@@ -380,6 +377,7 @@ body {
   align-items: flex-start;
   justify-content: center;
   position: relative;
+  overflow: auto;
 }
 
 .empty-state {
@@ -405,7 +403,7 @@ canvas {
   background: transparent;
   box-shadow: 0 10px 30px var(--shadow);
   image-rendering: auto;
-  max-width: 100%;
+  width: auto;
   height: auto;
 }
 
@@ -817,8 +815,58 @@ hr {
   background: #2f8cff;
 }
 
+#resizeDialog input,
+#resizeDialog select {
+  width: 100%;
+  padding: 10px 12px;
+
+  background: var(--panel-2);
+  color: var(--text);
+
+  border: 1px solid var(--border);
+  border-radius: 10px;
+
+  font: inherit;
+  box-sizing: border-box;
+}
+
+#resizeDialog input:focus,
+#resizeDialog select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
 #resizeDialog label {
   display: flex;
   flex-direction: column;
   gap: 6px;
+}
+
+#resizeDialog label:has(input[type="checkbox"]) {
+  flex-direction: row;
+  align-items: center;
+}
+
+.resize-size-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.resize-size-field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.resize-size-field span {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.resize-size-field small {
+  color: var(--muted-text);
+  font-size: 16px;
+  font-weight: 600;
 }

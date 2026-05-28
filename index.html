@@ -263,13 +263,8 @@
   <form method="dialog" class="levels-dialog__content">
     <div class="levels-dialog__header">
       <h2>Изменение размера</h2>
-      <button id="resizeCancelX" type="button">×</button>
+      <button class="dialog-close" id="resizeCancelX" type="button">×</button>
     </div>
-
-    <p>
-      До: <strong id="pixelsBefore">—</strong> Мп<br>
-      После: <strong id="pixelsAfter">—</strong> Мп
-    </p>
 
     <label>
       Единицы:
@@ -279,17 +274,22 @@
       </select>
     </label>
 
-    <label>
-      Ширина:
-      <input id="resizeWidth" type="number">
-    </label>
+    <div class="resize-size-row">
+      <label class="resize-size-field">
+        <span>
+          Ширина <small id="resizeWidthUnit">px</small>
+        </span>
+        <input id="resizeWidth" type="number" min="1">
+      </label>
 
-    <label>
-      Высота:
-      <input id="resizeHeight" type="number">
-    </label>
-
-    <label>
+      <label class="resize-size-field">
+        <span>
+          Высота <small id="resizeHeightUnit">px</small>
+        </span>
+        <input id="resizeHeight" type="number" min="1">
+      </label>
+    </div>
+    <label class="resize-checkbox">
       <input id="keepAspectRatio" type="checkbox" checked>
       Сохранять пропорции
     </label>
