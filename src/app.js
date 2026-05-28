@@ -577,7 +577,7 @@ function resetChannels(mode = "rgba", hasAlpha = false) {
 }
 
 // Подключение инструмента "Уровни".
-// Важно: динамический импорт не ломает загрузку изображений, если файл levels.js отсутствует или содержит ошибку.
+// динамический импорт не ломает загрузку изображений, если файл levels.js отсутствует или содержит ошибку.
 import("./levels.js")
   .then(({ initLevelsTool }) => {
     initLevelsTool({
@@ -602,3 +602,30 @@ import("./levels.js")
   .catch((error) => {
     console.warn("Инструмент Levels не подключился:", error);
   });
+
+
+const menuDropdowns = document.querySelectorAll(".menu-dropdown");
+
+menuDropdowns.forEach((menu) => {
+  const button = menu.querySelector(".button");
+
+  button?.addEventListener("mouseenter", () => {
+    menuDropdowns.forEach((item) => {
+      if (item !== menu) {
+        item.classList.remove("is-open");
+      }
+    });
+
+    menu.classList.add("is-open");
+  });
+});
+
+document.addEventListener("click", (event) => {
+  if (!event.target.closest(".menu-dropdown")) {
+    menuDropdowns.forEach((menu) => menu.classList.remove("is-open"));
+  }
+});
+
+document.querySelector(".toolbar")?.addEventListener("mouseleave", () => {
+  menuDropdowns.forEach((menu) => menu.classList.remove("is-open"));
+});

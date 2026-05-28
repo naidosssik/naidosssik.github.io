@@ -81,8 +81,7 @@ body {
   z-index: 100;
 }
 
-.menu-dropdown:hover .menu-dropdown__content,
-.menu-dropdown:focus-within .menu-dropdown__content {
+.menu-dropdown.is-open .menu-dropdown__content {
   display: grid;
   gap: 10px;
 }
@@ -175,6 +174,21 @@ body {
 .save-menu__dropdown button {
   width: 100%;
   text-align: left;
+}
+
+.save-menu {
+  position: relative;
+  z-index: 10;
+}
+
+.save-menu__dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+
+  z-index: 100;
+
+  min-width: 220px;
 }
 
 .workspace {
