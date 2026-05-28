@@ -570,8 +570,6 @@ hr {
   );
 }
 
-
-/* Levels dialog */
 .levels-dialog {
   width: min(680px, calc(100vw - 32px));
   border: 1px solid rgba(255,255,255,.14);
@@ -684,4 +682,82 @@ hr {
 
 #levelsApplyBtn {
   background: #2f8cff;
+}
+
+.levels-dialog {
+  width: min(920px, calc(100vw - 32px));
+}
+
+.levels-dialog__content {
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+}
+
+.levels-preview-box {
+  margin-top: 14px;
+  padding: 12px;
+
+  border: 1px solid #343843;
+  border-radius: 12px;
+
+  background: #17191d;
+}
+
+.levels-preview-box__title {
+  margin-bottom: 10px;
+
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.levels-preview-canvas-wrapper {
+  min-height: 180px;
+  max-height: 300px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: auto;
+
+  border-radius: 10px;
+
+  background:
+    linear-gradient(45deg, #2a2a2a 25%, transparent 25%),
+    linear-gradient(-45deg, #2a2a2a 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #2a2a2a 75%),
+    linear-gradient(-45deg, transparent 75%, #2a2a2a 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
+
+#levelsPreviewCanvas {
+  display: block;
+
+  max-width: 100%;
+  max-height: 280px;
+
+  width: auto;
+  height: auto;
+
+  box-shadow: 0 10px 24px rgba(0,0,0,.35);
+}
+
+.levels-dialog__content {
+  max-height: none;
+  overflow-y: visible;
+}
+
+.levels-visual-row {
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  gap: 14px;
+  align-items: stretch;
+}
+
+.histogram-box,
+.levels-preview-box {
+  margin-top: 10px;
+  min-height: 150px;
 }

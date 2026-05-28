@@ -188,8 +188,18 @@
       </select>
     </div>
 
-    <div class="histogram-box">
-      <canvas id="histogramCanvas" width="256" height="120"></canvas>
+    <div class="levels-visual-row">
+      <div class="histogram-box">
+        <canvas id="histogramCanvas" width="256" height="110"></canvas>
+      </div>
+
+      <div class="levels-preview-box">
+        <div class="levels-preview-box__title">Предпросмотр:</div>
+
+        <div class="levels-preview-canvas-wrapper">
+          <canvas id="levelsPreviewCanvas"></canvas>
+        </div>
+      </div>
     </div>
 
     <div class="levels-controls">

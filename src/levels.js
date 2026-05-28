@@ -22,6 +22,8 @@ export function initLevelsTool({
   const histogramModeSelect = document.getElementById("histogramMode");
   const histogramCanvas = document.getElementById("histogramCanvas");
   const histogramCtx = histogramCanvas?.getContext("2d");
+  const previewCanvas = document.getElementById("levelsPreviewCanvas");
+  const previewCtx = previewCanvas?.getContext("2d");
 
   const blackInput = document.getElementById("blackInput");
   const whiteInput = document.getElementById("whiteInput");
@@ -36,7 +38,15 @@ export function initLevelsTool({
   const cancelX = document.getElementById("levelsCancelX");
   const applyBtn = document.getElementById("levelsApplyBtn");
 
-  if (!openBtn || !dialog || !channelSelect || !histogramCanvas || !histogramCtx) {
+  if (
+    !openBtn ||
+    !dialog ||
+    !channelSelect ||
+    !histogramCanvas ||
+    !histogramCtx ||
+    !previewCanvas ||
+    !previewCtx
+  ) {
     return;
   }
 
@@ -66,6 +76,7 @@ export function initLevelsTool({
 
     syncControlsFromSettings();
     drawHistogram();
+    drawLevelsPreview(baseImageData);
     dialog.showModal();
   });
 
@@ -186,17 +197,37 @@ export function initLevelsTool({
   }
 
   function schedulePreview() {
-    if (!previewCheckbox.checked || !baseImageData) return;
+    if (!baseImageData) return;
+
     if (frameId) cancelAnimationFrame(frameId);
+
     frameId = requestAnimationFrame(() => {
-      renderImageData(applyLevels(baseImageData, settings));
+      const result = applyLevels(baseImageData, settings);
+
+      drawLevelsPreview(result);
+
+      if (previewCheckbox.checked) {
+        renderImageData(result);
+      }
+
       frameId = null;
     });
   }
 
   function restoreBaseImage() {
     if (!baseImageData) return;
+
+    drawLevelsPreview(baseImageData);
     renderImageData(cloneImageData(baseImageData));
+  }
+
+  function drawLevelsPreview(imageData) {
+    if (!imageData) return;
+
+    previewCanvas.width = imageData.width;
+    previewCanvas.height = imageData.height;
+
+    previewCtx.putImageData(imageData, 0, 0);
   }
 
   function drawHistogram() {
