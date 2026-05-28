@@ -75,9 +75,14 @@ export function initLevelsTool({
     previewCheckbox.checked = true;
 
     syncControlsFromSettings();
-    drawHistogram();
-    drawLevelsPreview(baseImageData);
     dialog.showModal();
+
+
+    requestAnimationFrame(() => {
+      drawLevelsPreview(baseImageData);
+      drawHistogram();
+    });
+    
   });
 
   channelSelect.addEventListener("change", () => {
@@ -140,11 +145,11 @@ export function initLevelsTool({
   }
 
   function normalizeChannels(channels) {
-    const result = Array.isArray(channels) && channels.length
-      ? channels
-      : DEFAULT_CHANNELS;
+    if (!Array.isArray(channels) || !channels.length) {
+      return DEFAULT_CHANNELS;
+    }
 
-    return result.includes("master") ? result : ["master", ...result];
+    return channels;
   }
 
   function fillChannelSelect(channels) {

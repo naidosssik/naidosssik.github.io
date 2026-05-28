@@ -34,8 +34,6 @@ const imageSizeEl = document.getElementById("imageSize");
 const colorDepthEl = document.getElementById("colorDepth");
 const maskInfoEl = document.getElementById("maskInfo");
 const statusTextEl = document.getElementById("statusText");
-// const pixelPositionEl = document.getElementById("pixelPosition");
-// const pixelRgbaEl = document.getElementById("pixelRgba");
 const pixelHexEl = document.getElementById("pixelHex");
 const colorPreviewEl = document.getElementById("colorPreview");
 
@@ -582,18 +580,37 @@ import("./levels.js")
   .then(({ initLevelsTool }) => {
     initLevelsTool({
       getImageData: () => originalImageData,
+
+      getAvailableChannels: () => {
+        if (currentChannelMode === "gb7") {
+          return state.hasMask
+            ? ["master", "a"]
+            : ["master"];
+        }
+
+        return state.hasMask
+          ? ["master", "r", "g", "b", "a"]
+          : ["master", "r", "g", "b"];
+      },
+
       renderImageData: (imageData) => {
         canvas.width = imageData.width;
         canvas.height = imageData.height;
         canvas.style.display = "block";
         emptyState.style.display = "none";
+
         ctx.putImageData(imageData, 0, 0);
+
         state.imageData = imageData;
       },
+
       commitImageData: (imageData) => {
         originalImageData = imageData;
+
         ctx.putImageData(imageData, 0, 0);
+
         state.imageData = imageData;
+
         updateChannelPreviews();
         updateInfoPanel();
       },
