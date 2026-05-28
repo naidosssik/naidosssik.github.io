@@ -173,7 +173,7 @@ async function loadStandardImage(file) {
 
   currentChannelMode = "rgba";
 
-  resetChannels("rgba");
+  resetChannels("rgba", state.hasMask);
   updateInfoPanel();
   resetPixelInfo();
   updateChannelPreviews();
@@ -202,7 +202,7 @@ async function loadGB7(file) {
   state.hasMask = result.hasMask;
 
   currentChannelMode = "gb7";
-  resetChannels("gb7");
+  resetChannels("gb7", state.hasMask);
 
   renderImageData(result.imageData);
 
@@ -514,68 +514,66 @@ function pivotLab(n) {
     : 7.787 * n + 16 / 116;
 }
 
-function setupChannelPanel(mode) {
+function setupChannelPanel(mode, hasAlpha = false) {
   if (!channelsList) return;
 
-  channelsList.innerHTML = "";
-
   if (mode === "gb7") {
-    channelState.gray = true;
-    channelState.a = true;
-
     channelsList.innerHTML = `
       <button class="channel-item active" data-channel="gray">
-        <canvas class="channel-preview" id="preview-gray"></canvas>
+        <canvas width="80" height="50" id="preview-gray"></canvas>
         <span>Gray</span>
       </button>
 
-      <button class="channel-item active" data-channel="a">
-        <canvas class="channel-preview" id="preview-a"></canvas>
-        <span>Alpha</span>
-      </button>
+      ${
+        hasAlpha
+          ? `
+        <button class="channel-item active" data-channel="a">
+          <canvas width="80" height="50" id="preview-a"></canvas>
+          <span>Alpha</span>
+        </button>
+      `
+          : ""
+      }
     `;
 
     return;
   }
 
-  channelState.r = true;
-  channelState.g = true;
-  channelState.b = true;
-  channelState.a = true;
-
   channelsList.innerHTML = `
     <button class="channel-item active" data-channel="r">
-      <canvas class="channel-preview" id="preview-r"></canvas>
+      <canvas width="80" height="50" id="preview-r"></canvas>
       <span>Red</span>
     </button>
 
     <button class="channel-item active" data-channel="g">
-      <canvas class="channel-preview" id="preview-g"></canvas>
+      <canvas width="80" height="50" id="preview-g"></canvas>
       <span>Green</span>
     </button>
 
     <button class="channel-item active" data-channel="b">
-      <canvas class="channel-preview" id="preview-b"></canvas>
+      <canvas width="80" height="50" id="preview-b"></canvas>
       <span>Blue</span>
     </button>
 
-    <button class="channel-item active" data-channel="a">
-      <canvas class="channel-preview" id="preview-a"></canvas>
-      <span>Alpha</span>
-    </button>
+    ${hasAlpha ? `
+      <button class="channel-item active" data-channel="a">
+        <canvas width="80" height="50" id="preview-a"></canvas>
+        <span>Alpha</span>
+      </button>
+    ` : ""}
   `;
 }
 
-function resetChannels(mode = "rgba") {
+function resetChannels(mode = "rgba", hasAlpha = false) {
   currentChannelMode = mode;
 
   channelState.gray = true;
   channelState.r = true;
   channelState.g = true;
   channelState.b = true;
-  channelState.a = true;
+  channelState.a = hasAlpha;
 
-  setupChannelPanel(mode);
+  setupChannelPanel(mode, hasAlpha);
 }
 
 // Подключение инструмента "Уровни".
