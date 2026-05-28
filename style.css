@@ -63,6 +63,8 @@ body {
 }
 
 
+
+
 .menu-dropdown {
   position: relative;
 }
@@ -793,4 +795,30 @@ hr {
 .levels-preview-box {
   margin-top: 10px;
   min-height: 150px;
+}
+
+.scale-panel {
+  margin-top: 16px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--panel-2);
+}
+
+.scale-panel input,
+.scale-panel select,
+.resize-dialog input,
+.resize-dialog select {
+  width: 100%;
+  margin-top: 6px;
+}
+
+#resizeApplyBtn {
+  background: #2f8cff;
+}
+
+#resizeDialog label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }

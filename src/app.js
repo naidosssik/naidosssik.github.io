@@ -2,6 +2,7 @@ import { encodeGB7, decodeGB7 } from "./gb7.js";
 import { replaceExtension } from "./utils.js";
 import { initLevelsTool } from "./levels.js";
 import { resizeImageData } from "./interpolation.js";
+import { initResizeDialog } from "./resize-dialog.js";
 
 const fileInput = document.getElementById("fileInput");
 const canvas = document.getElementById("canvas");
@@ -42,8 +43,6 @@ const viewScaleSelect = document.getElementById("viewScaleSelect");
 const viewScaleValue = document.getElementById("viewScaleValue");
 
 let viewScale = 1;
-
-const scaleSelect = document.getElementById("scaleSelect");
 
 const state = {
   fileName: "",
@@ -148,6 +147,14 @@ async function loadStandardImage(file) {
   ctx.drawImage(bitmap, 0, 0);
 
   originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  state.imageData = originalImageData;
+
+  const initialScale = calculateInitialScale(
+    originalImageData.width,
+    originalImageData.height
+  );
+
+  setViewScale(Math.round(initialScale * 100));
 
   state.fileName = file.name;
   state.width = bitmap.width;
@@ -213,9 +220,17 @@ async function loadGB7(file) {
   renderImageData(result.imageData);
 
   originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  state.imageData = originalImageData;
+
+  const initialScale = calculateInitialScale(
+    originalImageData.width,
+    originalImageData.height
+  );
+
+  setViewScale(Math.round(initialScale * 100));
 
   updateChannelPreviews();
-  applyChannels();
+  drawCurrentImage();
 }
 
 function componentToHex(value) {
@@ -252,11 +267,7 @@ function pickPixel(event) {
   const pixel = ctx.getImageData(x, y, 1, 1).data;
   const [r, g, b, a] = pixel;
   const hex = rgbaToHex(r, g, b);
-
-  // pixelPositionEl.textContent = `${x}, ${y}`;
-  // pixelRgbaEl.textContent = `${r}, ${g}, ${b}, ${a}`;
   pixelHexEl.textContent = hex;
-
   const lab = rgbToLab(r, g, b);
 
   document.getElementById("lab-l").textContent = lab.l.toFixed(2);
@@ -404,8 +415,8 @@ function applyChannels() {
     data[i + 3] = channelState.a ? a : 255;
   }
 
-  ctx.putImageData(imageData, 0, 0);
   state.imageData = imageData;
+  drawCurrentImage();
 }
 
 function updateChannelPreviews() {
@@ -655,12 +666,6 @@ document.querySelector(".toolbar")?.addEventListener("mouseleave", () => {
   menuDropdowns.forEach((menu) => menu.classList.remove("is-open"));
 });
 
-scaleSelect.addEventListener("change", () => {
-  displayScale = Number(scaleSelect.value) / 100;
-
-  redrawCanvas();
-});
-
 function drawCurrentImage() {
   if (!state.imageData) return;
 
@@ -697,4 +702,37 @@ viewScaleRange.addEventListener("input", () => {
 
 viewScaleSelect.addEventListener("change", () => {
   setViewScale(viewScaleSelect.value);
+});
+
+function calculateInitialScale(width, height) {
+  const wrapper = document.getElementById("canvasWrapper");
+
+  const availableWidth = wrapper.clientWidth - 100;
+  const availableHeight = wrapper.clientHeight - 100;
+
+  const scaleByWidth = availableWidth / width;
+  const scaleByHeight = availableHeight / height;
+
+  const scale = Math.min(scaleByWidth, scaleByHeight);
+
+  return Math.min(3, Math.max(0.12, scale));
+}
+
+initResizeDialog({
+  getImageData: () => originalImageData,
+
+  commitImageData: (imageData) => {
+    originalImageData = imageData;
+    state.imageData = imageData;
+
+    updateInfoPanel();
+    updateChannelPreviews();
+
+    const initialScale = calculateInitialScale(
+      imageData.width,
+      imageData.height
+    );
+
+    setViewScale(Math.round(initialScale * 100));
+  },
 });

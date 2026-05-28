@@ -57,6 +57,10 @@
             <button id="openLevelsBtn" type="button">
               Уровни
             </button>
+
+            <button id="openResizeBtn">
+              Изменить размер
+            </button>
           </div>
         </div>
 
@@ -253,7 +257,60 @@
       <button id="levelsApplyBtn" type="button">Применить</button>
     </div>
   </form>
-</dialog>
+  </dialog>
+
+  <dialog class="levels-dialog" id="resizeDialog">
+  <form method="dialog" class="levels-dialog__content">
+    <div class="levels-dialog__header">
+      <h2>Изменение размера</h2>
+      <button id="resizeCancelX" type="button">×</button>
+    </div>
+
+    <p>
+      До: <strong id="pixelsBefore">—</strong> Мп<br>
+      После: <strong id="pixelsAfter">—</strong> Мп
+    </p>
+
+    <label>
+      Единицы:
+      <select id="resizeUnit">
+        <option value="percent">Проценты</option>
+        <option value="pixels">Пиксели</option>
+      </select>
+    </label>
+
+    <label>
+      Ширина:
+      <input id="resizeWidth" type="number">
+    </label>
+
+    <label>
+      Высота:
+      <input id="resizeHeight" type="number">
+    </label>
+
+    <label>
+      <input id="keepAspectRatio" type="checkbox" checked>
+      Сохранять пропорции
+    </label>
+
+    <label>
+      Интерполяция:
+      <select id="resizeInterpolation">
+        <option value="bilinear">Билинейная</option>
+        <option value="nearest">Ближайший сосед</option>
+      </select>
+    </label>
+
+    <p id="interpolationTooltip"></p>
+
+    <div class="levels-dialog__actions">
+      <button id="resizeCancelBtn" type="button">Отмена</button>
+      <button id="resizeApplyBtn" type="button">Применить</button>
+    </div>
+  </form>
+  </dialog>
+
 
   <script type="module" src="src/app.js"></script>
 </body>
