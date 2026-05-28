@@ -19,7 +19,6 @@ const channelState = {
 };
 
 let currentChannelMode = "rgba";
-
 let originalImageData = null;
 
 const downloadPngBtn = document.getElementById("downloadPngBtn");
@@ -37,6 +36,14 @@ const maskInfoEl = document.getElementById("maskInfo");
 const statusTextEl = document.getElementById("statusText");
 const pixelHexEl = document.getElementById("pixelHex");
 const colorPreviewEl = document.getElementById("colorPreview");
+
+const viewScaleRange = document.getElementById("viewScaleRange");
+const viewScaleSelect = document.getElementById("viewScaleSelect");
+const viewScaleValue = document.getElementById("viewScaleValue");
+
+let viewScale = 1;
+
+const scaleSelect = document.getElementById("scaleSelect");
 
 const state = {
   fileName: "",
@@ -646,4 +653,48 @@ document.addEventListener("click", (event) => {
 
 document.querySelector(".toolbar")?.addEventListener("mouseleave", () => {
   menuDropdowns.forEach((menu) => menu.classList.remove("is-open"));
+});
+
+scaleSelect.addEventListener("change", () => {
+  displayScale = Number(scaleSelect.value) / 100;
+
+  redrawCanvas();
+});
+
+function drawCurrentImage() {
+  if (!state.imageData) return;
+
+  const scaledWidth = Math.round(state.imageData.width * viewScale);
+  const scaledHeight = Math.round(state.imageData.height * viewScale);
+
+  const scaledImageData = resizeImageData(
+    state.imageData,
+    scaledWidth,
+    scaledHeight,
+    "bilinear"
+  );
+
+  canvas.width = scaledWidth;
+  canvas.height = scaledHeight;
+
+  ctx.putImageData(scaledImageData, 0, 0);
+}
+
+function setViewScale(percent) {
+  const safePercent = Math.min(300, Math.max(12, Number(percent)));
+
+  viewScale = safePercent / 100;
+  viewScaleRange.value = safePercent;
+  viewScaleSelect.value = safePercent;
+  viewScaleValue.textContent = `${safePercent}%`;
+
+  drawCurrentImage();
+}
+
+viewScaleRange.addEventListener("input", () => {
+  setViewScale(viewScaleRange.value);
+});
+
+viewScaleSelect.addEventListener("change", () => {
+  setViewScale(viewScaleSelect.value);
 });

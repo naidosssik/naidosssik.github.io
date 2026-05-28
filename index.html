@@ -107,6 +107,25 @@
           <div><span>Маска:</span> <strong id="maskInfo">—</strong></div>
         </div>
 
+        <section class="scale-panel">
+          <h3>Масштаб отображения</h3>
+          <label class="scale-panel__control" for="viewScaleRange">
+            <span>12%–300%</span>
+            <strong id="viewScaleValue">100%</strong>
+          </label>
+          <input id="viewScaleRange" type="range" min="12" max="300" value="100" step="1" />
+          <select id="viewScaleSelect" aria-label="Готовые масштабы">
+            <option value="12">12%</option>
+            <option value="25">25%</option>
+            <option value="50">50%</option>
+            <option value="75">75%</option>
+            <option value="100">100%</option>
+            <option value="150">150%</option>
+            <option value="200">200%</option>
+            <option value="300">300%</option>
+          </select>
+        </section>
+
         <section class="channels-panel">
           <h3>Каналы</h3>
 

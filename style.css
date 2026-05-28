@@ -643,6 +643,39 @@ hr {
   display: block;
 }
 
+.scale-panel {
+  margin-top: 16px;
+  padding: 14px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+.scale-panel__control {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+#viewScaleRange {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+#viewScaleSelect {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--panel-3);
+  color: var(--text);
+}
+
 .levels-controls {
   display: grid;
   gap: 12px;
