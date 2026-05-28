@@ -1,11 +1,20 @@
-const CHANNELS = ["master", "r", "g", "b", "a"];
 const DEFAULT_LEVEL = { black: 0, white: 255, gamma: 1 };
-const CHANNEL_INDEX = { r: 0, g: 1, b: 2, a: 3 };
+const DEFAULT_CHANNELS = ["master", "r", "g", "b"];
+const CHANNEL_INDEX = { gray: 0, r: 0, g: 1, b: 2, a: 3 };
+const CHANNEL_LABELS = {
+  master: "Master",
+  gray: "Gray",
+  r: "Red",
+  g: "Green",
+  b: "Blue",
+  a: "Alpha",
+};
 
 export function initLevelsTool({
   getImageData,
   renderImageData,
   commitImageData,
+  getAvailableChannels = () => DEFAULT_CHANNELS,
 }) {
   const openBtn = document.getElementById("openLevelsBtn");
   const dialog = document.getElementById("levelsDialog");
@@ -45,8 +54,10 @@ export function initLevelsTool({
     }
 
     baseImageData = cloneImageData(current);
-    settings = createDefaultSettings();
-    activeChannel = "master";
+    const availableChannels = normalizeChannels(getAvailableChannels());
+    fillChannelSelect(availableChannels);
+    settings = createDefaultSettings(availableChannels);
+    activeChannel = availableChannels.includes("master") ? "master" : availableChannels[0];
     applied = false;
 
     channelSelect.value = activeChannel;
@@ -113,8 +124,22 @@ export function initLevelsTool({
     dialog.close();
   }
 
-  function createDefaultSettings() {
-    return Object.fromEntries(CHANNELS.map((channel) => [channel, { ...DEFAULT_LEVEL }]));
+  function createDefaultSettings(channels = normalizeChannels(getAvailableChannels())) {
+    return Object.fromEntries(channels.map((channel) => [channel, { ...DEFAULT_LEVEL }]));
+  }
+
+  function normalizeChannels(channels) {
+    const result = Array.isArray(channels) && channels.length
+      ? channels
+      : DEFAULT_CHANNELS;
+
+    return result.includes("master") ? result : ["master", ...result];
+  }
+
+  function fillChannelSelect(channels) {
+    channelSelect.innerHTML = channels
+      .map((channel) => `<option value="${channel}">${CHANNEL_LABELS[channel] || channel}</option>`)
+      .join("");
   }
 
   function syncControlsFromSettings() {
@@ -236,7 +261,7 @@ function buildHistogram(imageData, channel) {
   const data = imageData.data;
 
   for (let i = 0; i < data.length; i += 4) {
-    const value = channel === "master"
+    const value = channel === "master" || channel === "gray"
       ? Math.round(data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114)
       : data[i + CHANNEL_INDEX[channel]];
     histogram[value] += 1;
@@ -248,19 +273,38 @@ function buildHistogram(imageData, channel) {
 function applyLevels(imageData, settings) {
   const result = cloneImageData(imageData);
   const data = result.data;
-  const masterLut = createLut(settings.master);
+
+  const masterLut = createLut(settings.master || DEFAULT_LEVEL);
+  const grayLut = settings.gray ? createLut(settings.gray) : null;
   const luts = {
-    r: createLut(settings.r),
-    g: createLut(settings.g),
-    b: createLut(settings.b),
-    a: createLut(settings.a),
+    r: createLut(settings.r || DEFAULT_LEVEL),
+    g: createLut(settings.g || DEFAULT_LEVEL),
+    b: createLut(settings.b || DEFAULT_LEVEL),
+    a: settings.a ? createLut(settings.a) : null,
   };
 
   for (let i = 0; i < data.length; i += 4) {
-    data[i] = luts.r[masterLut[data[i]]];
-    data[i + 1] = luts.g[masterLut[data[i + 1]]];
-    data[i + 2] = luts.b[masterLut[data[i + 2]]];
-    data[i + 3] = luts.a[data[i + 3]];
+    let r = masterLut[data[i]];
+    let g = masterLut[data[i + 1]];
+    let b = masterLut[data[i + 2]];
+
+    if (grayLut) {
+      r = grayLut[r];
+      g = grayLut[g];
+      b = grayLut[b];
+    } else {
+      r = luts.r[r];
+      g = luts.g[g];
+      b = luts.b[b];
+    }
+
+    data[i] = r;
+    data[i + 1] = g;
+    data[i + 2] = b;
+
+    if (luts.a) {
+      data[i + 3] = luts.a[data[i + 3]];
+    }
   }
 
   return result;
@@ -281,6 +325,7 @@ function createLut({ black, white, gamma }) {
 function getHistogramColor(channel) {
   return {
     master: "rgba(230,230,230,.9)",
+    gray: "rgba(200,200,200,.95)",
     r: "rgba(255,95,95,.95)",
     g: "rgba(95,230,135,.95)",
     b: "rgba(95,150,255,.95)",
