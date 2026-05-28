@@ -1,6 +1,7 @@
 import { encodeGB7, decodeGB7 } from "./gb7.js";
 import { replaceExtension } from "./utils.js";
 import { initLevelsTool } from "./levels.js";
+import { resizeImageData } from "./interpolation.js";
 
 const fileInput = document.getElementById("fileInput");
 const canvas = document.getElementById("canvas");
@@ -581,17 +582,17 @@ import("./levels.js")
     initLevelsTool({
       getImageData: () => originalImageData,
 
-      getAvailableChannels: () => {
-        if (currentChannelMode === "gb7") {
-          return state.hasMask
-            ? ["master", "a"]
-            : ["master"];
-        }
-
+    getAvailableChannels: () => {
+      if (currentChannelMode === "gb7") {
         return state.hasMask
-          ? ["master", "r", "g", "b", "a"]
-          : ["master", "r", "g", "b"];
-      },
+          ? ["master", "a"]
+          : ["master"];
+      }
+
+      return state.hasMask
+        ? ["master", "r", "g", "b", "a"]
+        : ["master", "r", "g", "b"];
+    },
 
       renderImageData: (imageData) => {
         canvas.width = imageData.width;
