@@ -3,6 +3,8 @@ import { replaceExtension } from "./utils.js";
 import { initLevelsTool } from "./levels.js";
 import { resizeImageData } from "./interpolation.js";
 import { initResizeDialog } from "./resize-dialog.js";
+import { initFiltersTool } from "./filters.js";
+
 
 const fileInput = document.getElementById("fileInput");
 const canvas = document.getElementById("canvas");
@@ -734,5 +736,25 @@ initResizeDialog({
     );
 
     setViewScale(Math.round(initialScale * 100));
+  },
+});
+
+initFiltersTool({
+  getImageData: () => originalImageData,
+
+  renderImageData: (imageData) => {
+    if (!imageData) return;
+
+    state.imageData = imageData;
+    drawCurrentImage();
+  },
+
+  commitImageData: (imageData) => {
+    originalImageData = imageData;
+    state.imageData = imageData;
+
+    updateInfoPanel();
+    updateChannelPreviews();
+    drawCurrentImage();
   },
 });

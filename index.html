@@ -61,6 +61,10 @@
             <button id="openResizeBtn">
               Изменить размер
             </button>
+
+            <button id="openFiltersBtn" type="button">
+              Фильтры
+            </button>
           </div>
         </div>
 
@@ -311,6 +315,71 @@
   </form>
   </dialog>
 
+  <dialog class="levels-dialog filters-dialog" id="filtersDialog">
+  <form method="dialog" class="levels-dialog__content filters-dialog__content">
+    <div class="levels-dialog__header">
+      <h2>Фильтрация с ядром 3×3</h2>
+      <button class="dialog-close" id="filtersCancelX" type="button">×</button>
+    </div>
+
+    <label>
+      Предустановка:
+      <select id="filterPreset">
+        <option value="identity">Тождественное отображение</option>
+        <option value="sharpen">Повышение резкости</option>
+        <option value="gaussian">Фильтр Гаусса 3×3</option>
+        <option value="boxBlur">Прямоугольное размытие</option>
+        <option value="prewittX">Оператор Прюитта X</option>
+        <option value="prewittY">Оператор Прюитта Y</option>
+      </select>
+    </label>
+
+    <div class="kernel-section">
+      <span>Ядро свёртки:</span>
+      <div class="kernel-grid" aria-label="Матрица ядра 3 на 3">
+        <input class="kernel-input" type="number" step="0.1" value="0">
+        <input class="kernel-input" type="number" step="0.1" value="0">
+        <input class="kernel-input" type="number" step="0.1" value="0">
+        <input class="kernel-input" type="number" step="0.1" value="0">
+        <input class="kernel-input" type="number" step="0.1" value="1">
+        <input class="kernel-input" type="number" step="0.1" value="0">
+        <input class="kernel-input" type="number" step="0.1" value="0">
+        <input class="kernel-input" type="number" step="0.1" value="0">
+        <input class="kernel-input" type="number" step="0.1" value="0">
+      </div>
+    </div>
+
+    <fieldset class="filter-fieldset">
+      <legend>Каналы</legend>
+      <label><input class="filter-channel" type="checkbox" value="r" checked> Red</label>
+      <label><input class="filter-channel" type="checkbox" value="g" checked> Green</label>
+      <label><input class="filter-channel" type="checkbox" value="b" checked> Blue</label>
+      <label><input class="filter-channel" type="checkbox" value="a" checked> Alpha</label>
+    </fieldset>
+
+    <label>
+      Обработка края:
+      <select id="filterEdgeMode">
+        <option value="copy">Копирование крайнего пикселя</option>
+        <option value="black">Заполнение чёрным</option>
+        <option value="white">Заполнение белым</option>
+      </select>
+    </label>
+
+    <label class="preview-checkbox">
+      <input id="filtersPreview" type="checkbox" checked>
+      Предпросмотр
+    </label>
+
+    <p class="filters-status" id="filtersStatus">Фильтр не применён</p>
+
+    <div class="levels-dialog__actions">
+      <button id="filtersResetBtn" type="button">Сброс</button>
+      <button id="filtersCancelBtn" type="button">Закрыть</button>
+      <button id="filtersApplyBtn" type="button">Применить</button>
+    </div>
+  </form>
+  </dialog>
 
   <script type="module" src="src/app.js"></script>
 </body>

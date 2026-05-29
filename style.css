@@ -870,3 +870,88 @@ hr {
   font-size: 16px;
   font-weight: 600;
 }
+.filters-dialog__content {
+  width: min(560px, calc(100vw - 32px));
+  gap: 18px;
+}
+
+.filters-dialog label,
+.filters-dialog select,
+.filters-dialog input {
+  font-size: 14px;
+}
+
+.filters-dialog select,
+.filters-dialog input[type="number"] {
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 6px;
+  color: var(--text);
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.kernel-section {
+  display: grid;
+  gap: 10px;
+}
+
+.kernel-section > span,
+.filter-fieldset legend {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.kernel-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding: 12px;
+  background: var(--panel-3);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+.kernel-grid input {
+  text-align: center;
+  font-weight: 700;
+}
+
+.filter-fieldset {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+.filter-fieldset label,
+.filters-dialog .preview-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+}
+
+.filters-status {
+  min-height: 20px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+#filtersApplyBtn {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+#filtersApplyBtn:disabled,
+#filtersResetBtn:disabled {
+  opacity: 0.55;
+  cursor: progress;
+}
