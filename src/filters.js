@@ -150,10 +150,9 @@ export function initFiltersTool({ getImageData, renderImageData, commitImageData
     if (statusEl) statusEl.textContent = text;
   }
 
-  async function drawPreviewCanvas(imageData) {
+  function drawPreviewCanvas(imageData) {
     if (!previewCanvas || !previewCtx || !imageData) return;
 
-    const token = ++previewRenderToken;
     const maxWidth = 260;
     const maxHeight = 220;
     const scale = Math.min(1, maxWidth / imageData.width, maxHeight / imageData.height);
@@ -162,25 +161,21 @@ export function initFiltersTool({ getImageData, renderImageData, commitImageData
 
     previewCanvas.width = previewWidth;
     previewCanvas.height = previewHeight;
+
     previewCtx.clearRect(0, 0, previewWidth, previewHeight);
     previewCtx.imageSmoothingEnabled = true;
 
-    try {
-      const bitmap = await createImageBitmap(imageData);
-      if (token !== previewRenderToken) {
-        bitmap.close?.();
-        return;
-      }
-      previewCtx.drawImage(bitmap, 0, 0, previewWidth, previewHeight);
-      bitmap.close?.();
-    } catch {
-      const tempCanvas = document.createElement("canvas");
-      tempCanvas.width = imageData.width;
-      tempCanvas.height = imageData.height;
-      tempCanvas.getContext("2d").putImageData(imageData, 0, 0);
-      if (token !== previewRenderToken) return;
-      previewCtx.drawImage(tempCanvas, 0, 0, previewWidth, previewHeight);
-    }
+    // Надёжный способ отрисовки предпросмотра:
+    // сначала кладём ImageData на временный canvas в полном размере,
+    // затем масштабируем его в маленький canvas предпросмотра.
+    const tempCanvas = document.createElement("canvas");
+    tempCanvas.width = imageData.width;
+    tempCanvas.height = imageData.height;
+
+    const tempCtx = tempCanvas.getContext("2d");
+    tempCtx.putImageData(imageData, 0, 0);
+
+    previewCtx.drawImage(tempCanvas, 0, 0, previewWidth, previewHeight);
   }
 
   function fillKernel(values) {

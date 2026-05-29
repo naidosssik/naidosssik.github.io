@@ -1069,3 +1069,45 @@ hr {
     white-space: normal;
   }
 }
+
+.filters-preview-box {
+  margin-top: 0;
+  min-height: auto;
+}
+
+.filters-preview-canvas-wrapper {
+  min-height: 150px;
+  max-height: 240px;
+  padding: 10px;
+}
+
+#filtersPreviewCanvas {
+  display: block;
+  max-width: 100%;
+  max-height: 220px;
+  width: auto;
+  height: auto;
+  box-shadow: 0 10px 24px rgba(0,0,0,.35);
+}
+
+#filtersCancelX {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  min-height: 28px;
+  padding: 0;
+  font-size: 18px;
+  line-height: 1;
+  border-radius: 9px;
+}
+
+.filters-preview-canvas-wrapper {
+  background-color: var(--panel-dark);
+  background-image:
+    linear-gradient(45deg, rgba(255,255,255,.08) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(255,255,255,.08) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(255,255,255,.08) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(255,255,255,.08) 75%);
+  background-size: 18px 18px;
+  background-position: 0 0, 0 9px, 9px -9px, -9px 0;
+}
