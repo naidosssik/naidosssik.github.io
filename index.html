@@ -263,8 +263,8 @@
   </form>
   </dialog>
 
-  <dialog class="levels-dialog" id="resizeDialog">
-  <form method="dialog" class="levels-dialog__content">
+  <dialog class="levels-dialog resize-dialog" id="resizeDialog">
+  <form method="dialog" class="levels-dialog__content resize-dialog__content">
     <div class="levels-dialog__header">
       <h2>Изменение размера</h2>
       <button class="dialog-close" id="resizeCancelX" type="button">×</button>
@@ -292,11 +292,12 @@
         </span>
         <input id="resizeHeight" type="number" min="1">
       </label>
+
+      <label class="resize-checkbox">
+        <input id="keepAspectRatio" type="checkbox" checked>
+        Сохранять пропорции
+      </label>
     </div>
-    <label class="resize-checkbox">
-      <input id="keepAspectRatio" type="checkbox" checked>
-      Сохранять пропорции
-    </label>
 
     <label>
       Интерполяция:
@@ -314,6 +315,7 @@
     </div>
   </form>
   </dialog>
+
 
   <dialog class="levels-dialog filters-dialog" id="filtersDialog">
   <form method="dialog" class="levels-dialog__content filters-dialog__content">

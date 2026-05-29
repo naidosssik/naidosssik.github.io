@@ -955,3 +955,117 @@ hr {
   opacity: 0.55;
   cursor: progress;
 }
+
+/* Единый вид диалоговых окон: размер и фильтры сделаны в стиле панели уровней */
+#resizeDialog,
+#filtersDialog {
+  width: fit-content;
+  max-width: calc(100vw - 32px);
+}
+
+.resize-dialog__content,
+.filters-dialog__content {
+  width: min(760px, calc(100vw - 64px));
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+.filters-dialog__content {
+  width: min(620px, calc(100vw - 64px));
+}
+
+#resizeDialog .levels-dialog__header,
+#filtersDialog .levels-dialog__header {
+  margin-bottom: 14px;
+}
+
+#resizeDialog .levels-dialog__header h2,
+#filtersDialog .levels-dialog__header h2 {
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+#resizeDialog label,
+#filtersDialog label,
+.kernel-section > span,
+.filter-fieldset legend {
+  font-size: 14px;
+  line-height: 1.25;
+  font-weight: 700;
+  color: var(--text);
+}
+
+#resizeDialog select,
+#resizeDialog input,
+#filtersDialog select,
+#filtersDialog input[type="number"] {
+  min-height: 40px;
+  padding: 8px 10px;
+  margin-top: 6px;
+  font-size: 14px;
+  line-height: 1.2;
+  border-radius: 10px;
+}
+
+.resize-dialog__content,
+.filters-dialog__content,
+.kernel-section {
+  display: grid;
+  gap: 12px;
+}
+
+.resize-size-row {
+  grid-template-columns: 1fr 1fr auto;
+  gap: 14px;
+  align-items: end;
+}
+
+.resize-size-field,
+#resizeDialog label {
+  gap: 6px;
+}
+
+.resize-checkbox {
+  min-height: 40px;
+  padding-bottom: 8px;
+  white-space: nowrap;
+}
+
+#interpolationTooltip {
+  margin: 0;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+#resizeDialog .levels-dialog__actions,
+#filtersDialog .levels-dialog__actions {
+  margin-top: 10px;
+}
+
+.kernel-grid {
+  gap: 8px;
+  padding: 10px;
+}
+
+.filter-fieldset {
+  gap: 12px;
+  padding: 10px;
+}
+
+.filters-status {
+  margin: -4px 0 0;
+  font-size: 13px;
+}
+
+@media (max-width: 760px) {
+  .resize-size-row,
+  .filter-fieldset {
+    grid-template-columns: 1fr;
+  }
+
+  .resize-checkbox {
+    padding-bottom: 0;
+    white-space: normal;
+  }
+}
