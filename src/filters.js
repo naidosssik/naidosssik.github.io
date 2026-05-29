@@ -128,8 +128,6 @@ async function convolveImageData({ imageData, kernel, channels, edgeMode, onProg
 export function initFiltersTool({ getImageData, renderImageData, commitImageData }) {
   const dialog = document.getElementById("filtersDialog");
   const openBtn = document.getElementById("openFiltersBtn");
-  const saveBtn = document.getElementById('saveBtn');
-  const filtersBtn = document.getElementById("openFiltersBtn");
   const closeX = document.getElementById("filtersCancelX");
   const cancelBtn = document.getElementById("filtersCancelBtn");
   const resetBtn = document.getElementById("filtersResetBtn");
@@ -140,13 +138,49 @@ export function initFiltersTool({ getImageData, renderImageData, commitImageData
   const kernelInputs = Array.from(document.querySelectorAll(".kernel-input"));
   const channelCheckboxes = Array.from(document.querySelectorAll(".filter-channel"));
   const statusEl = document.getElementById("filtersStatus");
+  const previewCanvas = document.getElementById("filtersPreviewCanvas");
+  const previewCtx = previewCanvas?.getContext("2d");
 
   let baseImageData = null;
   let previewTimer = null;
   let isProcessing = false;
+  let previewRenderToken = 0;
 
   function setStatus(text) {
     if (statusEl) statusEl.textContent = text;
+  }
+
+  async function drawPreviewCanvas(imageData) {
+    if (!previewCanvas || !previewCtx || !imageData) return;
+
+    const token = ++previewRenderToken;
+    const maxWidth = 260;
+    const maxHeight = 220;
+    const scale = Math.min(1, maxWidth / imageData.width, maxHeight / imageData.height);
+    const previewWidth = Math.max(1, Math.round(imageData.width * scale));
+    const previewHeight = Math.max(1, Math.round(imageData.height * scale));
+
+    previewCanvas.width = previewWidth;
+    previewCanvas.height = previewHeight;
+    previewCtx.clearRect(0, 0, previewWidth, previewHeight);
+    previewCtx.imageSmoothingEnabled = true;
+
+    try {
+      const bitmap = await createImageBitmap(imageData);
+      if (token !== previewRenderToken) {
+        bitmap.close?.();
+        return;
+      }
+      previewCtx.drawImage(bitmap, 0, 0, previewWidth, previewHeight);
+      bitmap.close?.();
+    } catch {
+      const tempCanvas = document.createElement("canvas");
+      tempCanvas.width = imageData.width;
+      tempCanvas.height = imageData.height;
+      tempCanvas.getContext("2d").putImageData(imageData, 0, 0);
+      if (token !== previewRenderToken) return;
+      previewCtx.drawImage(tempCanvas, 0, 0, previewWidth, previewHeight);
+    }
   }
 
   function fillKernel(values) {
@@ -203,15 +237,18 @@ export function initFiltersTool({ getImageData, renderImageData, commitImageData
   function schedulePreview() {
     clearTimeout(previewTimer);
 
-    if (!previewCheckbox.checked || !baseImageData) {
-      renderImageData(baseImageData);
+    if (!baseImageData) return;
+
+    if (!previewCheckbox.checked) {
+      drawPreviewCanvas(baseImageData);
+      setStatus("Предпросмотр выключен");
       return;
     }
 
     previewTimer = setTimeout(async () => {
       const filtered = await buildFilteredImage();
       if (filtered && previewCheckbox.checked) {
-        renderImageData(filtered);
+        drawPreviewCanvas(filtered);
         setStatus("Предпросмотр обновлён");
       }
     }, 180);
@@ -232,6 +269,7 @@ export function initFiltersTool({ getImageData, renderImageData, commitImageData
     );
 
     resetDialog();
+    drawPreviewCanvas(baseImageData);
     dialog.showModal();
   });
 
@@ -247,16 +285,14 @@ export function initFiltersTool({ getImageData, renderImageData, commitImageData
 
   resetBtn?.addEventListener("click", () => {
     resetDialog();
-    renderImageData(baseImageData);
+    drawPreviewCanvas(baseImageData);
   });
 
   cancelBtn?.addEventListener("click", () => {
-    renderImageData(baseImageData);
     dialog.close();
   });
 
   closeX?.addEventListener("click", () => {
-    renderImageData(baseImageData);
     dialog.close();
   });
 
