@@ -202,11 +202,32 @@ export function initFiltersTool({
 
   function updateChannelAvailability() {
     const alphaAvailable = isAlphaAvailable();
+    const grayMode = isGrayImage();
 
     channelCheckboxes.forEach((checkbox) => {
       const label = checkbox.closest("label");
+      const value = checkbox.value;
 
-      if (checkbox.value === "a") {
+      if (grayMode) {
+        const visible =
+          value === "gray" ||
+          (value === "a" && alphaAvailable);
+
+        checkbox.checked = visible;
+        checkbox.disabled = !visible;
+
+        if (label) label.hidden = !visible;
+        return;
+      }
+
+      if (value === "gray") {
+        checkbox.checked = false;
+        checkbox.disabled = true;
+        if (label) label.hidden = true;
+        return;
+      }
+
+      if (value === "a") {
         checkbox.checked = alphaAvailable;
         checkbox.disabled = !alphaAvailable;
         if (label) label.hidden = !alphaAvailable;
@@ -217,6 +238,11 @@ export function initFiltersTool({
       checkbox.disabled = false;
       if (label) label.hidden = false;
     });
+  }
+
+  function isGrayImage() {
+    const format = window.currentImageFormat || "";
+    return format === "gb7";
   }
 
   function resetDialog() {
