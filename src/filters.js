@@ -38,10 +38,11 @@ const KERNEL_PRESETS = {
 };
 
 const CHANNEL_OFFSETS = {
-  r: 0,
-  g: 1,
-  b: 2,
-  a: 3,
+  r: [0],
+  g: [1],
+  b: [2],
+  gray: [0, 1, 2],
+  a: [3],
 };
 
 function clamp(value) {
@@ -83,7 +84,9 @@ async function convolveImageData({ imageData, kernel, channels, edgeMode, onProg
   let divisor = kernel.reduce((sum, value) => sum + value, 0);
   if (divisor === 0) divisor = 1;
 
-  const channelOffsets = channels.map((channel) => CHANNEL_OFFSETS[channel]);
+  const channelOffsets = channels
+    .flatMap((channel) => CHANNEL_OFFSETS[channel] ?? [])
+    .filter((offset, index, offsets) => offsets.indexOf(offset) === index);
   const chunkRows = 24;
 
   for (let y = 0; y < height; y += 1) {
@@ -201,48 +204,23 @@ export function initFiltersTool({
   }
 
   function updateChannelAvailability() {
-    const alphaAvailable = isAlphaAvailable();
-    const grayMode = isGrayImage();
+    const availableChannels = getAvailableChannels?.() ?? ["r", "g", "b"];
+    const normalizedChannels = Array.isArray(availableChannels)
+      ? availableChannels
+      : ["r", "g", "b"];
 
     channelCheckboxes.forEach((checkbox) => {
       const label = checkbox.closest("label");
       const value = checkbox.value;
+      const visible = normalizedChannels.includes(value);
 
-      if (grayMode) {
-        const visible =
-          value === "gray" ||
-          (value === "a" && alphaAvailable);
+      checkbox.checked = visible;
+      checkbox.disabled = !visible;
 
-        checkbox.checked = visible;
-        checkbox.disabled = !visible;
-
-        if (label) label.hidden = !visible;
-        return;
+      if (label) {
+        label.hidden = !visible;
       }
-
-      if (value === "gray") {
-        checkbox.checked = false;
-        checkbox.disabled = true;
-        if (label) label.hidden = true;
-        return;
-      }
-
-      if (value === "a") {
-        checkbox.checked = alphaAvailable;
-        checkbox.disabled = !alphaAvailable;
-        if (label) label.hidden = !alphaAvailable;
-        return;
-      }
-
-      checkbox.checked = true;
-      checkbox.disabled = false;
-      if (label) label.hidden = false;
     });
-  }
-
-  function isGrayImage() {
-    const format = window.currentImageFormat || "";
-    return format === "gb7";
   }
 
   function resetDialog() {
