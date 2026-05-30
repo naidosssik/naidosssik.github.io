@@ -5,7 +5,6 @@ import { resizeImageData } from "./interpolation.js";
 import { initResizeDialog } from "./resize-dialog.js";
 import { initFiltersTool } from "./filters.js";
 
-
 const fileInput = document.getElementById("fileInput");
 const canvas = document.getElementById("canvas");
 const channelsList = document.getElementById("channelsList");
@@ -742,9 +741,18 @@ initResizeDialog({
 initFiltersTool({
   getImageData: () => originalImageData,
 
+  getAvailableChannels: () => {
+    if (currentChannelMode === "gb7") {
+      return state.hasMask ? ["gray", "a"] : ["gray"];
+    }
+
+    return state.hasMask
+      ? ["r", "g", "b", "a"]
+      : ["r", "g", "b"];
+  },
+
   renderImageData: (imageData) => {
     if (!imageData) return;
-
     state.imageData = imageData;
     drawCurrentImage();
   },

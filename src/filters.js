@@ -125,7 +125,12 @@ async function convolveImageData({ imageData, kernel, channels, edgeMode, onProg
   return output;
 }
 
-export function initFiltersTool({ getImageData, renderImageData, commitImageData }) {
+export function initFiltersTool({
+  getImageData,
+  renderImageData,
+  commitImageData,
+  getAvailableChannels = () => ["r", "g", "b", "a"],
+}) {
   const dialog = document.getElementById("filtersDialog");
   const openBtn = document.getElementById("openFiltersBtn");
   const closeX = document.getElementById("filtersCancelX");
@@ -190,12 +195,34 @@ export function initFiltersTool({ getImageData, renderImageData, commitImageData
     setStatus(`Выбрано: ${preset.name}`);
   }
 
+  function isAlphaAvailable() {
+    const channels = getAvailableChannels?.() ?? [];
+    return Array.isArray(channels) && channels.includes("a");
+  }
+
+  function updateChannelAvailability() {
+    const alphaAvailable = isAlphaAvailable();
+
+    channelCheckboxes.forEach((checkbox) => {
+      const label = checkbox.closest("label");
+
+      if (checkbox.value === "a") {
+        checkbox.checked = alphaAvailable;
+        checkbox.disabled = !alphaAvailable;
+        if (label) label.hidden = !alphaAvailable;
+        return;
+      }
+
+      checkbox.checked = true;
+      checkbox.disabled = false;
+      if (label) label.hidden = false;
+    });
+  }
+
   function resetDialog() {
     presetSelect.value = "identity";
     edgeSelect.value = "copy";
-    channelCheckboxes.forEach((checkbox) => {
-      checkbox.checked = true;
-    });
+    updateChannelAvailability();
     previewCheckbox.checked = true;
     loadPreset("identity");
   }
@@ -266,6 +293,7 @@ export function initFiltersTool({ getImageData, renderImageData, commitImageData
     resetDialog();
     drawPreviewCanvas(baseImageData);
     dialog.showModal();
+    schedulePreview();
   });
 
   presetSelect?.addEventListener("change", () => {
