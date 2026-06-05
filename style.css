@@ -916,6 +916,17 @@ hr {
   font-weight: 700;
 }
 
+.filter-control {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.filter-control input {
+  width: 140px;
+}
+
 .kernel-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
