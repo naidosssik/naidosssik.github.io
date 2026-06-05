@@ -12,7 +12,7 @@ const KERNEL_PRESETS = {
     offset: 0,
   },
   gaussian: {
-    name: "Фильтр Гаусса 3×3",
+    name: "Фильтр Гаусса 3x3",
     values: [1, 2, 1, 2, 4, 2, 1, 2, 1],
     divisor: 16,
     offset: 0,
@@ -173,9 +173,7 @@ export function initFiltersTool({
     previewCtx.clearRect(0, 0, previewWidth, previewHeight);
     previewCtx.imageSmoothingEnabled = true;
 
-    // Надёжный способ отрисовки предпросмотра:
-    // сначала кладём ImageData на временный canvas в полном размере,
-    // затем масштабируем его в маленький canvas предпросмотра.
+    // сначала кладём ImageData на временный canvas в полном размере, затем масштабируем его в маленький canvas предпросмотра
     const tempCanvas = document.createElement("canvas");
     tempCanvas.width = imageData.width;
     tempCanvas.height = imageData.height;

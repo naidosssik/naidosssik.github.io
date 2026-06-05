@@ -870,6 +870,18 @@ hr {
   font-size: 16px;
   font-weight: 600;
 }
+
+.resize-pixels-info {
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--muted-text);
+}
+
+.resize-pixels-info p {
+  margin: 4px 0;
+}
+
 .filters-dialog__content {
   width: min(560px, calc(100vw - 32px));
   gap: 18px;

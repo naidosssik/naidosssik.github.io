@@ -1,9 +1,6 @@
 import { resizeImageData, INTERPOLATION_METHODS } from "./interpolation.js";
 
-export function initResizeDialog({
-  getImageData,
-  commitImageData,
-}) {
+export function initResizeDialog({ getImageData, commitImageData }) {
   const dialog = document.getElementById("resizeDialog");
   const openBtn = document.getElementById("openResizeBtn");
 
@@ -12,6 +9,50 @@ export function initResizeDialog({
   const unitSelect = document.getElementById("resizeUnit");
   const widthUnit = document.getElementById("resizeWidthUnit");
   const heightUnit = document.getElementById("resizeHeightUnit");
+  const keepAspectRatio = document.getElementById("keepAspectRatio");
+  const interpolationSelect = document.getElementById("resizeInterpolation");
+  const tooltip = document.getElementById("interpolationTooltip");
+
+  const pixelsBefore = document.getElementById("pixelsBefore");
+  const pixelsAfter = document.getElementById("pixelsAfter");
+
+  let originalWidth = 0;
+  let originalHeight = 0;
+  let aspectRatio = 1;
+  let isUpdating = false;
+
+  function formatPixels(width, height) {
+    const pixels = width * height;
+    const megapixels = pixels / 1_000_000;
+
+    return `${width} × ${height} px (${megapixels.toFixed(2)} МП)`;
+  }
+
+  function getTargetSize() {
+    const widthValue = Number(widthInput.value);
+    const heightValue = Number(heightInput.value);
+
+    if (unitSelect.value === "percent") {
+      return {
+        width: Math.round(originalWidth * widthValue / 100),
+        height: Math.round(originalHeight * heightValue / 100),
+      };
+    }
+
+    return {
+      width: Math.round(widthValue),
+      height: Math.round(heightValue),
+    };
+  }
+
+  function updatePixelsInfo() {
+    if (!originalWidth || !originalHeight) return;
+
+    const target = getTargetSize();
+
+    pixelsBefore.textContent = formatPixels(originalWidth, originalHeight);
+    pixelsAfter.textContent = formatPixels(target.width, target.height);
+  }
 
   function updateResizeUnits() {
     const unit = unitSelect.value === "percent" ? "%" : "px";
@@ -19,22 +60,48 @@ export function initResizeDialog({
     widthUnit.textContent = unit;
     heightUnit.textContent = unit;
 
-    const imageData = getImageData();
-
-    if (!imageData) return;
-
     if (unitSelect.value === "percent") {
       widthInput.value = 100;
       heightInput.value = 100;
     } else {
-      widthInput.value = imageData.width;
-      heightInput.value = imageData.height;
+      widthInput.value = originalWidth;
+      heightInput.value = originalHeight;
     }
+
+    updatePixelsInfo();
   }
 
-  const keepAspectRatio = document.getElementById("keepAspectRatio");
-  const interpolationSelect = document.getElementById("resizeInterpolation");
-  const tooltip = document.getElementById("interpolationTooltip");
+  function syncHeightByWidth() {
+    if (!keepAspectRatio.checked || isUpdating) return;
+
+    isUpdating = true;
+
+    if (unitSelect.value === "percent") {
+      heightInput.value = widthInput.value;
+    } else {
+      const width = Number(widthInput.value);
+      heightInput.value = Math.round(width / aspectRatio);
+    }
+
+    isUpdating = false;
+    updatePixelsInfo();
+  }
+
+  function syncWidthByHeight() {
+    if (!keepAspectRatio.checked || isUpdating) return;
+
+    isUpdating = true;
+
+    if (unitSelect.value === "percent") {
+      widthInput.value = heightInput.value;
+    } else {
+      const height = Number(heightInput.value);
+      widthInput.value = Math.round(height * aspectRatio);
+    }
+
+    isUpdating = false;
+    updatePixelsInfo();
+  }
 
   openBtn.addEventListener("click", () => {
     const imageData = getImageData();
@@ -44,27 +111,30 @@ export function initResizeDialog({
       return;
     }
 
-    widthInput.value = imageData.width;
-    heightInput.value = imageData.height;
+    originalWidth = imageData.width;
+    originalHeight = imageData.height;
+    aspectRatio = originalWidth / originalHeight;
 
     tooltip.textContent =
       INTERPOLATION_METHODS[interpolationSelect.value].description;
 
-    dialog.showModal();
     updateResizeUnits();
+    dialog.showModal();
   });
+
+  unitSelect.addEventListener("change", updateResizeUnits);
+
+  widthInput.addEventListener("input", syncHeightByWidth);
+  heightInput.addEventListener("input", syncWidthByHeight);
 
   interpolationSelect.addEventListener("change", () => {
     tooltip.textContent =
       INTERPOLATION_METHODS[interpolationSelect.value].description;
   });
-  unitSelect.addEventListener("change", updateResizeUnits);
 
   document.getElementById("resizeApplyBtn").addEventListener("click", () => {
     const imageData = getImageData();
-
-    let newWidth = Number(widthInput.value);
-    let newHeight = Number(heightInput.value);
+    const { width: newWidth, height: newHeight } = getTargetSize();
 
     if (!Number.isFinite(newWidth) || !Number.isFinite(newHeight)) {
       alert("Введите корректные числа.");
