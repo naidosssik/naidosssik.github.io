@@ -207,20 +207,16 @@ export function initFiltersTool({
 
   function updateChannelAvailability() {
     const availableChannels = getAvailableChannels?.() ?? ["r", "g", "b"];
-    const normalizedChannels = Array.isArray(availableChannels)
-      ? availableChannels
-      : ["r", "g", "b"];
 
     channelCheckboxes.forEach((checkbox) => {
       const label = checkbox.closest("label");
-      const value = checkbox.value;
-      const visible = normalizedChannels.includes(value);
+      const isAvailable = availableChannels.includes(checkbox.value);
 
-      checkbox.checked = visible;
-      checkbox.disabled = !visible;
+      checkbox.checked = isAvailable;
+      checkbox.disabled = !isAvailable;
 
       if (label) {
-        label.hidden = !visible;
+        label.style.display = isAvailable ? "flex" : "none";
       }
     });
   }
