@@ -25,7 +25,7 @@ export function initResizeDialog({ getImageData, commitImageData }) {
     const pixels = width * height;
     const megapixels = pixels / 1_000_000;
 
-    return `${width} × ${height} px (${megapixels.toFixed(2)} МП)`;
+    return `${width} px × ${height} px (${megapixels.toFixed(2)} МП)`;
   }
 
   function getTargetSize() {
