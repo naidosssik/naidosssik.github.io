@@ -75,6 +75,10 @@ function getSelectedChannels(channelCheckboxes) {
     .map((checkbox) => checkbox.value);
 }
 
+function waitFrame() {
+  return new Promise((resolve) => requestAnimationFrame(resolve));
+}
+
 async function convolveImageData({ imageData, kernel, channels, edgeMode, onProgress }) {
   const { width, height } = imageData;
   const source = imageData.data;
@@ -120,7 +124,7 @@ async function convolveImageData({ imageData, kernel, channels, edgeMode, onProg
 
     if (y % chunkRows === 0) {
       onProgress?.(Math.round((y / height) * 100));
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await waitFrame();
     }
   }
 
